@@ -9,6 +9,6 @@ def hello_world():
 
 @app.route("/link")
 def link():
-    return "<a href=\"\\\">Such a clicky link!</a>"
+    return "<a href=\"\/\">Such a clicky link!</a>"
 
 app.run("localhost", 2000)
