@@ -8,7 +8,7 @@
 
 # Instalacja
 ```shell
-pip install -e .
+pip install -r requirements.txt
 ```
 
 # Funkcje
