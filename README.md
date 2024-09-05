@@ -3,7 +3,7 @@
 - [Dokumentacja](#dokumentacja)
 - [Cele](#cele)
 - [Do Zrobienia](#do-zrobienia)
-- [Znane Błędy](#znane-bledy)
+- [Znane Błędy](#znane-błędy)
 
 # Funkcje
 
