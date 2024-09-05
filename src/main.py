@@ -8,7 +8,7 @@ app = flask.Flask(__name__)
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
 
-@app.route("/fetchinfo")
+@app.route("/link")
 def link() -> str:
     return "<a href=\"/\">Such a clicky link!</a>"
 
