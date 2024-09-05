@@ -1,0 +1,3 @@
+import flask
+
+import this
