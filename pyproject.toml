@@ -7,6 +7,7 @@ name = "Komunikator1C"
 version = "0.0.1"
 dependencies = [
   "flask",
+  "Jinja2",
 ]
 authors = [
   {name = "Michał Opar"},

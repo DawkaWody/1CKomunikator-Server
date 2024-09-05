@@ -8,19 +8,29 @@
 
 # Instalacja
 ```shell
-pip install -r requirements.txt
+pip install -e .
 ```
 
 # Funkcje
 
 # Dokumentacja
+jak coś się zrobi to dać dokumentację
+
+## db.py
+zarządza bazą danych
+użycie:
+db.py clear                 - clears the database
+db.py add <user> <password> - adds a user
+db.py print_table           - prints all users 
+
 
 # Cele
 
 # Do Zrobienia
- - Strona + Serwer
- - Baza Danych
- - Szyfrowanie
- - Aplikacja
+ - [ ] Strona + Serwer
+ - [x] Baza Danych
+ - [ ] Szyfrowanie
+ - [ ] api
+ - [ ] apka
 
 # Znane Błędy
