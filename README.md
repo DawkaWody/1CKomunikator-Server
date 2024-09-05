@@ -1,2 +1,5 @@
 # Super komunikator
-cool itp
+- [Funkcje](#)
+- [Dokumentacja](#)
+- [Do Zrobienia](#)
+- [Znane Błędy](#)
