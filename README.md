@@ -1,4 +1,5 @@
 # Super komunikator
+- [Instalacja](#instalacja)
 - [Funkcje](#funkcje)
 - [Dokumentacja](#dokumentacja)
 - [Cele](#cele)
