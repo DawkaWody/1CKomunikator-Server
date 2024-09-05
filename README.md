@@ -18,10 +18,9 @@ pip install -e .
 # Cele
 
 # Do Zrobienia
- - Strona
+ - Strona + Serwer
  - Baza Danych
  - Szyfrowanie
- - api
- - apka
+ - Aplikacja
 
 # Znane Błędy
