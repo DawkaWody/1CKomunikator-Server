@@ -9,7 +9,7 @@ def hello_world():
 
 @app.route("/link")
 def link():
-    return "<a href=\"\/\">Such a clicky link!</a>"
+    return "<a href=\"/\">Such a clicky link!</a>"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
