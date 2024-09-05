@@ -1,11 +1,11 @@
 # Super komunikator
 - [Funkcje](#funkcje)
-- [Dokumentacja](#)
-- [Cele](#)
-- [Do Zrobienia](#)
-- [Znane Błędy](#)
+- [Dokumentacja](#dokumentacja)
+- [Cele](#cele)
+- [Do Zrobienia](#do-zrobienia)
+- [Znane Błędy](#znane-bledy)
 
-# funkcje
+# Funkcje
 
 # Dokumentacja
 
