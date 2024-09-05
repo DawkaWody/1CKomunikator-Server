@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Komunikator1C"
+version = "0.0.1"
+requires-python = "3.12"
+dependencies = [
+  "flask",
+]
+authors = [
+  {name = "Michał Opar"},
+]
+description = "Comunicator for class 1c"
