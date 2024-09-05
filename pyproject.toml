@@ -10,5 +10,6 @@ dependencies = [
 ]
 authors = [
   {name = "Michał Opar"},
+  {name = "Wojciech Dudek"}
 ]
 description = "Comunicator for class 1c"
