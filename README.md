@@ -28,7 +28,19 @@ użycie:
 
 # Postęp Rozwoju
 
+● - Całkowicie gotowe
+○ - Częściowo gotowe
+°  - Mało gotowe
+   - Nic nie jest gotowe
 
+<details>
+<summary> Tytuł </summary>
+- ° Podstawa serwera
+-   Obsługa bazy danych
+-   Działające API - Weryfikacja danych
+-   Działające API - Obsługa wiadomości
+-   Inne g$%&a
+</details>
 
 # Cele
 
