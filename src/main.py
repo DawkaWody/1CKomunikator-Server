@@ -3,15 +3,15 @@ import waitress
 from db import add_user
 from enum import Enum
 
-class LoginFailureReason(Enum):
+class LoginErrorReason(Enum):
     invalid_username = 0,
     invalid_password = 1,
-    other_error = 2
+    other = 2
 
-class AccountCreationFailureReason(Enum):
+class AccountCreationErrorReason(Enum):
     invalid_password = 0,
     user_already_exists = 1
-    other_error = 2
+    other = 2
 
 app = Flask(__name__)
 
