@@ -8,7 +8,7 @@
 - [Do Zrobienia](#do-zrobienia)
 - [Znane Błędy](#znane-błędy)
 
-## Ważne!
+## Ważne
 
 Prace nad HTML: dev-html (w trakcie)
 Prace nad Bazą Danych: dev-database (w trakcie)
