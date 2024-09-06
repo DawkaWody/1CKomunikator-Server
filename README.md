@@ -31,35 +31,35 @@ użycie:
 <details>
 <summary> Postępy </summary>
 
-Podstawa serwera
+### Podstawa serwera
 - [ ] Całość gotowa
 - [ ] Większość gotowa
 - [ ] Połowa gotowa
 - [x] Mniejszość gotowa
 - [ ] Nic nie jest gotowe
 
-Obsługa bazy danych
+### Obsługa bazy danych
 - [ ] Całość gotowa
 - [ ] Większość gotowa
 - [ ] Połowa gotowa
 - [ ] Mniejszość gotowa
 - [x] Nic nie jest gotowe
 
-Działające API - Weryfikacja danych
+### Działające API - Weryfikacja danych
 - [ ] Całość gotowa
 - [ ] Większość gotowa
 - [ ] Połowa gotowa
 - [ ] Mniejszość gotowa
 - [x] Nic nie jest gotowe
 
-Działające API - Obsługa wiadomości
+### Działające API - Obsługa wiadomości
 - [ ] Całość gotowa
 - [ ] Większość gotowa
 - [ ] Połowa gotowa
 - [ ] Mniejszość gotowa
 - [x] Nic nie jest gotowe
 
-Inne g$%&a
+### Inne g$%&a
 - [ ] Całość gotowa
 - [ ] Większość gotowa
 - [ ] Połowa gotowa
