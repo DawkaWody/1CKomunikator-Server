@@ -70,7 +70,7 @@ użycie:
 
 ## Cele
 
-# Do Zrobienia
+## Do Zrobienia
  - [ ] Strona (Serwer)
  - [ ] Baza Danych
  - [ ] Szyfrowanie
