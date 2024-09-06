@@ -36,7 +36,7 @@ def init_db():
     """
     db = get_db()
 
-    with current_app.open_resource('schema.sql') as f:
+    with current_app.open_resource('clear.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
 
@@ -48,11 +48,7 @@ def add_user(username, password):
     :return:
     """
     db = get_db()
-    # todo: replace with jinja2 template
-    db.executescript(f"""
-INSERT INTO users (username, password)
-VALUES ('{username}', '{password}');
-""")
+    db.executescript()
 
 
 def print_table():
