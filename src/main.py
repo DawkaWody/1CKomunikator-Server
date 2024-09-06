@@ -1,9 +1,10 @@
 from enum import Enum
+from os.path import join as join_path
 
 import waitress
 from flask import Flask, request, session
 
-from db import get_user
+from db import get_user, add_user
 
 
 class LoginErrorReason(Enum):
@@ -37,13 +38,7 @@ def login() -> dict:
     user_password = request.form["password"]
     password = get_user(username)
 
-    if not password:
-        return {
-            "success": False,
-            "reason": "Invalid parameter provided."
-        }
-
-    if user_password != password:
+    if not password or user_password != password:
         return {
             "success": False,
             "reason": "Invalid parameter provided."
@@ -51,12 +46,30 @@ def login() -> dict:
     session["username"] = username
     return {
         "success": True,
+        "reason": ""
     }
+
 
 @app.post("/signup")
 def signup() -> dict:
-
-
+    """
+    {"username", "password"}
+    :return:
+    """
+    username = request.form["username"]
+    password = request.form["password"]
+    users = get_user(username)
+    if users is not None:
+        return {
+            "success": False,
+            "reason": "User with given username already exists"
+        }
+    add_user(username, password)
+    success = get_user(username) == password
+    return {
+        "success": success,
+        "reason": ""
+    }
 
 
 app.config.from_mapping(
@@ -64,6 +77,6 @@ app.config.from_mapping(
     SECRET_KEY='dev',
 )
 
-app.root_path = app.root_path + "\\.."
+app.root_path = join_path(app.root_path, "..")
 if __name__ == "__main__":
     waitress.serve(app, host="0.0.0.0", port="8000")
