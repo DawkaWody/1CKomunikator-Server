@@ -28,7 +28,7 @@ jak coś się zrobi to dać dokumentację
 
 ### db.py
 zarządza bazą danych
-użycie:
+
 `db.py clear - clears the database`
 
 `db.py add <user> <password> - adds a user`
