@@ -16,3 +16,6 @@ authors = [
   {name = "Wojciech Dudek"}
 ]
 description = "Comunicator for class 1c"
+
+[project.optional-dependencies]
+testing = ["requests", "pytest"]

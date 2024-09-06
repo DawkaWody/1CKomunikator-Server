@@ -74,7 +74,6 @@ def signup() -> dict:
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
-    SECRET_KEY='dev',
 )
 
 app.root_path = join_path(app.root_path, "..")

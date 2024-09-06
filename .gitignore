@@ -209,3 +209,5 @@ cython_debug/
 .idea/
 
 .vscode
+# tmp folder for test database
+/tmp/

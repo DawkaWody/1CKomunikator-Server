@@ -7,8 +7,9 @@ from sqlescapy import sqlescape
 
 # g is per-request state
 sql_functions_env = Environment(
-    loader=FileSystemLoader("sql_functions"),
+    loader=FileSystemLoader("./sql_functions"),
     autoescape=select_autoescape(),
+    cache_size=0,
 )
 
 
