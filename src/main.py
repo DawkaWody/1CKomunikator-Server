@@ -32,19 +32,18 @@ def login() -> dict:
     """
     # todo: add hashing function
     username = request.form["username"]
-    password = request.form["password"]
-    # possible_passwords = get_user(username)
-    possible_passwords = ["admin"]  # tmp
-    if password not in possible_passwords:
-        if len(possible_passwords) > 1:
-            print(f"Error, multiple users with name {username}")
-        return {
-            "success": False,
-            "reason": LoginErrorReason.invalid_password
-        }
-
-    session["username"] = username
-
+    input_password = request.form["password"]
+    # password = get_user(username)
+    password = ["admin"]  # tmp
+    # if not verify_password(input_password, password):
+    #    return {
+    #        "success": False,
+    #        "reason": LoginErrorReason.invalid_password
+    #    }
+    # else:
+    return {
+        "success": True,
+    }
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
