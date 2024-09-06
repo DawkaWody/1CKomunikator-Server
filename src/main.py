@@ -1,22 +1,5 @@
-from enum import Enum
-
-from waitress import serve
-from flask import Flask, request, session
-
-from db import add_user
-
-
-class LoginErrorReason(Enum):
-    invalid_username = 0,
-    invalid_password = 1,
-    other = 2
-
-
-class AccountCreationErrorReason(Enum):
-    invalid_password = 0,
-    user_already_exists = 1
-    other = 2
-
+from flask import Flask, request
+import waitress
 
 app = Flask(__name__)
 
@@ -26,28 +9,17 @@ def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
 
 
-#
-
 @app.post("/login")
-def login() -> dict:
+def login() -> str:
     """
     {"username", "password"}
     :return:
     """
-    # todo: add hashing function p
+    # todo: add hsshing function p
     data: dict = request.form
+    print(data["username"])
+    return "Test"
 
-    session["username"] = data["username"]
-    session["password"] = data["password"]
-
-    # if not user_exists(data["username"]):
-    add_user(data["username"], data["password"])
-    # ^ Odrazu loguje ^
-    # else:
-    # get_user(data["username])
-    # Sprawdzenie poprawności hasła, zalogowanie
-
-    return {"success": False, "reason": LoginErrorReason.invalid_password}
 
 
 app.config.from_mapping(
@@ -57,4 +29,4 @@ app.config.from_mapping(
 
 app.root_path = app.root_path + "\\.."
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port="8000")
+    waitress.serve(app, host="0.0.0.0", port="8000")
