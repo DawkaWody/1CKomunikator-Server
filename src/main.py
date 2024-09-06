@@ -4,19 +4,7 @@ import waitress
 from flask import Flask, request, session
 
 from db import get_user
-
-
-class LoginErrorReason(Enum):
-    invalid_username = 0,
-    invalid_password = 1,
-    other = 2
-
-
-class AccountCreationErrorReason(Enum):
-    invalid_password = 0,
-    user_already_exists = 1
-    other = 2
-
+from src.db import add_user
 
 app = Flask(__name__)
 
@@ -29,8 +17,8 @@ def hello_world() -> str:
 @app.post("/login")
 def login() -> dict:
     """
-    {"username", "password"}
-    :return:
+    {"username": "usrnm", "password": "passwd"}
+    :return: A dict object containing "success" and "reason" (in case of error) fields
     """
     # todo: add hashing function
     username = request.form["username"]
@@ -48,6 +36,7 @@ def login() -> dict:
             "success": False,
             "reason": "Invalid parameter provided."
         }
+
     session["username"] = username
     return {
         "success": True,
@@ -55,9 +44,31 @@ def login() -> dict:
 
 @app.post("/signup")
 def signup() -> dict:
+    """
+    {"username": "usrnm", "password": "passwd"}
+    :return: A dict object containing "success" and "reason" (in case of error) fields
+    """
+    # todo: add hashing function
+    username = request.form["username"]
+    user_password = request.form["password"]
+    password = get_user(username)
 
+    if password:
+        return {
+            "success": False,
+            "reason": "Invalid parameter provided."
+        }
 
+    add_user(username, password)
 
+    session["username"] = username
+    return {
+        "success": True,
+    }
+
+@app.post("/logoff")
+def logoff() -> dict:
+    session["2"]
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
