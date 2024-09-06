@@ -36,7 +36,7 @@ def login() -> dict:
     username = request.form["username"]
     user_password = request.form["password"]
     password = get_user(username)
-    if user_password != password:
+    if password is not None and user_password != password:
         return {
             "success": False,
             "reason": LoginErrorReason.invalid_password
