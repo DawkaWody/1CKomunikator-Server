@@ -7,17 +7,17 @@
 - [Do Zrobienia](#do-zrobienia)
 - [Znane Błędy](#znane-błędy)
 
-# Instalacja
+## Instalacja
 ```shell
 pip install -r requirements.txt
 ```
 
-# Funkcje
+## Funkcje
 
-# Dokumentacja
+## Dokumentacja
 jak coś się zrobi to dać dokumentację
 
-## db.py
+### db.py
 zarządza bazą danych
 użycie:
 `db.py clear - clears the database`
@@ -26,7 +26,7 @@ użycie:
 
 `db.py print_table - prints all users`
 
-# Postęp
+## Postęp
 
 <details>
 <summary> Postępy </summary>
@@ -68,7 +68,7 @@ użycie:
 
 </details>
 
-# Cele
+## Cele
 
 # Do Zrobienia
  - [ ] Strona (Serwer)
@@ -76,4 +76,4 @@ użycie:
  - [ ] Szyfrowanie
  - [ ] API
 
-# Znane Błędy
+## Znane Błędy
