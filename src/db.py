@@ -1,9 +1,14 @@
 import sqlite3
 
 from flask import current_app, g
-
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from sqlescapy import sqlescape
 
 # g is per-request state
+sql_functions_env = Environment(
+    loader=FileSystemLoader("sql_functions"),
+    autoescape=select_autoescape(),
+)
 
 
 def get_db() -> sqlite3.Connection:
@@ -35,9 +40,8 @@ def init_db():
     czyści bazę danych i ją tworzy
     """
     db = get_db()
-
-    with current_app.open_resource('clear.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+    script = sql_functions_env.get_template("clear.sql").render()
+    db.executescript(script)
 
 
 def add_user(username, password):
@@ -48,7 +52,25 @@ def add_user(username, password):
     :return:
     """
     db = get_db()
-    db.executescript()
+    script = sql_functions_env.get_template("add_user.sql").render(
+        username=sqlescape(username),
+        password=sqlescape(password),
+    )
+    db.executescript(script)
+
+
+def get_user(username) -> list[str]:
+    """
+    zwraca hasło
+    :param username: Nazwa użytkownika
+    :return:
+    """
+    db = get_db()
+    script = sql_functions_env.get_template("get_user.sql").render(
+        username=sqlescape(username),
+    )
+    rows = db.execute(script.strip()).fetchall()
+    return [row["passowrd"] for row in rows]
 
 
 def print_table():
@@ -76,6 +98,7 @@ def print_help():
 db.py clear                 - clears the database
 db.py add <user> <password> - adds a user
 db.py print_table           - prints all users
+db.py get <user>            - gets password about
 """)
 
 
@@ -101,6 +124,13 @@ def main():
             assert len(argv) == 4, "Usage: db.py add <user> <password>"
             print(f"Adding user {argv[2]}...")
             add_user(argv[2], argv[3])
+            return
+
+        if argv[1] == "get":
+            # program, "get", username
+            assert len(argv) == 3, "Usage: db.py get <user>"
+            print(f"Getting passwor of user {argv[2]}...")
+            print(get_user(argv[2]))
             return
 
         if argv[1] == "print_table":
