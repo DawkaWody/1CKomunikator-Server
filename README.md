@@ -39,9 +39,13 @@ użycie:
 <details>
 <summary> Postępy </summary>
 - ° Podstawa serwera
+
 -   Obsługa bazy danych
+
 -   Działające API - Weryfikacja danych
+
 -   Działające API - Obsługa wiadomości
+
 -   Inne g$%&a
 </details>
 
