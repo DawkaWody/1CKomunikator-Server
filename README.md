@@ -30,6 +30,7 @@ użycie:
 
 <details>
 <summary> Postępy </summary>
+
 Podstawa serwera
 - [ ] Całość gotowa
 - [ ] Większość gotowa
