@@ -9,7 +9,7 @@
 
 # Instalacja
 ```shell
-pip install -e .
+pip install -r requirements.txt
 ```
 
 # Funkcje
@@ -21,7 +21,9 @@ jak coś się zrobi to dać dokumentację
 zarządza bazą danych
 użycie:
 `db.py clear - clears the database`
+
 `db.py add <user> <password> - adds a user`
+
 `db.py print_table - prints all users`
 
 # Postęp Rozwoju
