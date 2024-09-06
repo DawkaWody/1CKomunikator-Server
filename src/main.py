@@ -1,5 +1,17 @@
-from flask import Flask, request
+from flask import Flask, request, session
 import waitress
+from db import add_user
+from enum import Enum
+
+class LoginFailureReason(Enum):
+    invalid_username = 0,
+    invalid_password = 1,
+    other_error = 2
+
+class AccountCreationFailureReason(Enum):
+    invalid_password = 0,
+    user_already_exists = 1
+    other_error = 2
 
 app = Flask(__name__)
 
@@ -10,15 +22,26 @@ def hello_world() -> str:
 
 
 @app.post("/login")
-def login() -> str:
+def login() -> dict:
     """
     {"username", "password"}
     :return:
     """
-    # todo: add hsshing function p
+    # todo: add hashing function p
     data: dict = request.form
-    print(data["username"])
-    return "Test"
+
+    session["username"] = data["username"]
+    session["password"] = data["password"]
+
+    #if not user_exists(data["username"]):
+    add_user(data["username"], data["password"])
+    # ^ Odrazu loguje ^
+    #else:
+    #get_user(data["username])
+    #Sprawdzenie poprawności hasła, zalogowanie
+
+    return { "Success": False, "reason": LoginFailureReason.invalid_password }
+
 
 
 
