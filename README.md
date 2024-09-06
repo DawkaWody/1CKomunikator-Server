@@ -28,13 +28,13 @@ użycie:
 
 # Postęp Rozwoju
 
-● - Całkowicie gotowe
-○ - Częściowo gotowe
-°  - Mało gotowe
-   - Nic nie jest gotowe
+● - Całkowicie gotowe <br>
+○ - Częściowo gotowe <br>
+°  - Mało gotowe <br>
+   - Nic nie jest gotowe <br>
 
 <details>
-<summary> Tytuł </summary>
+<summary> Postępy </summary>
 - ° Podstawa serwera
 -   Obsługa bazy danych
 -   Działające API - Weryfikacja danych
