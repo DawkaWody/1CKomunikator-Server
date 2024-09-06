@@ -1,7 +1,9 @@
 from enum import Enum
 
-import waitress
+from waitress import serve
 from flask import Flask, request, session
+
+from db import add_user, get_user
 
 
 class LoginErrorReason(Enum):
@@ -18,6 +20,7 @@ class AccountCreationErrorReason(Enum):
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
@@ -31,19 +34,18 @@ def login() -> dict:
     """
     # todo: add hashing function
     username = request.form["username"]
-    input_password = request.form["password"]
-    # password = get_user(username)
-    password = ["admin"]  # tmp
-    # if not verify_password(input_password, password):
-    #    return {
-    #        "success": False,
-    #        "reason": LoginErrorReason.invalid_password
-    #    }
-    # else:
-
+    user_password = request.form["password"]
+    password = get_user(username)
+    if user_password != password:
+        return {
+            "success": False,
+            "reason": LoginErrorReason.invalid_password
+        }
+    session["username"] = username
     return {
         "success": True,
     }
+
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
@@ -52,4 +54,4 @@ app.config.from_mapping(
 
 app.root_path = app.root_path + "\\.."
 if __name__ == "__main__":
-    waitress.serve(app, host="0.0.0.0", port="8000")
+    serve(app, host="0.0.0.0", port="8000")
