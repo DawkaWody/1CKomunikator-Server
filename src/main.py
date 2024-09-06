@@ -1,9 +1,8 @@
+<<<<<<< HEAD
 from enum import Enum
 
-from waitress import serve
+import waitress
 from flask import Flask, request, session
-
-from db import add_user
 
 
 class LoginErrorReason(Enum):
@@ -20,35 +19,53 @@ class AccountCreationErrorReason(Enum):
 
 app = Flask(__name__)
 
+=======
+from flask import Flask, request
+import waitress
+
+app = Flask(__name__)
+>>>>>>> bbd610b (/login/ działa na zapytania post)
+
 
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
 
 
-#
-
 @app.post("/login")
+<<<<<<< HEAD
 def login() -> dict:
+=======
+def login() -> str:
+>>>>>>> bbd610b (/login/ działa na zapytania post)
     """
     {"username", "password"}
     :return:
     """
-    # todo: add hashing function p
-    data: dict = request.form
-
-    session["username"] = data["username"]
-    session["password"] = data["password"]
-
-    # if not user_exists(data["username"]):
-    add_user(data["username"], data["password"])
-    # ^ Odrazu loguje ^
+<<<<<<< HEAD
+    # todo: add hashing function
+    username = request.form["username"]
+    input_password = request.form["password"]
+    # password = get_user(username)
+    password = ["admin"]  # tmp
+    # if not verify_password(input_password, password):
+    #    return {
+    #        "success": False,
+    #        "reason": LoginErrorReason.invalid_password
+    #    }
     # else:
-    # get_user(data["username])
-    # Sprawdzenie poprawności hasła, zalogowanie
 
-    return {"success": False, "reason": LoginErrorReason.invalid_password}
+    return {
+        "success": True,
+    }
+=======
+    # todo: add hsshing function p
+    data: dict = request.form
+    print(data["username"])
+    return "Test"
 
+
+>>>>>>> bbd610b (/login/ działa na zapytania post)
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
@@ -57,4 +74,4 @@ app.config.from_mapping(
 
 app.root_path = app.root_path + "\\.."
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port="8000")
+    waitress.serve(app, host="0.0.0.0", port="8000")
