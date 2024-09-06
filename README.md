@@ -1,4 +1,5 @@
 # 1CKomunikator
+- [Wazne!](#ważne!)
 - [Instalacja](#instalacja)
 - [Funkcje](#funkcje)
 - [Dokumentacja](#dokumentacja)
@@ -6,6 +7,14 @@
 - [Cele](#cele)
 - [Do Zrobienia](#do-zrobienia)
 - [Znane Błędy](#znane-błędy)
+
+## Ważne!
+
+Prace nad HTML: dev-html (w trakcie)
+Prace nad Bazą Danych: dev-database (w trakcie)
+Prace nad Serwerem: dev-server (w trakcie)
+
+Po skończeniu pracy merge do dev.
 
 ## Instalacja
 ```shell
