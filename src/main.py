@@ -21,6 +21,7 @@ class AccountCreationErrorReason(Enum):
 app = Flask(__name__)
 
 
+
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
