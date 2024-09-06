@@ -79,7 +79,7 @@ def get_user(username) -> Optional[str]:
         print(f"Multiple passwords for user {username}")
     if len(rows) == 0:
         return None
-    return row["password"]
+    return rows[0]["password"]
 
 
 def print_table():
