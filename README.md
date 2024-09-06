@@ -34,7 +34,7 @@ użycie:
 
 # Do Zrobienia
  - [ ] Strona + Serwer
- - [x] Baza Danych
+ - [ ] Baza Danych
  - [ ] Szyfrowanie
  - [ ] api
  - [ ] apka
