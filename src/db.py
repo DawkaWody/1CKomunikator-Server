@@ -1,5 +1,4 @@
-from sqlite3 import Connection, connect, PARSE_DECLTYPES, Row
-from typing import Optional
+import sqlite3
 
 from flask import current_app, g
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -12,17 +11,17 @@ sql_functions_env = Environment(
 )
 
 
-def get_db() -> Connection:
+def get_db() -> sqlite3.Connection:
     """
     zwraca uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych
     :return: Bazę danych
     """
     if "db" not in g:
-        g.db = connect(
+        g.db = sqlite3.connect(
             current_app.config["DATABASE"],
-            detect_types=PARSE_DECLTYPES,
+            detect_types=sqlite3.PARSE_DECLTYPES,
         )
-        g.db.row_factory = Row
+        g.db.row_factory = sqlite3.Row
     return g.db
 
 
@@ -64,7 +63,7 @@ def add_user(username, password):
     db.executescript(script)
 
 
-def get_user(username) -> Optional[str]:
+def get_user(username) -> list[str]:
     """
     zwraca hasło
     :param username: Nazwa użytkownika
@@ -75,11 +74,7 @@ def get_user(username) -> Optional[str]:
         username=sqlescape(username),
     )
     rows = db.execute(script.strip()).fetchall()
-    if len(rows) > 1:
-        print(f"Multiple passwords for user {username}")
-    if len(rows) == 0:
-        return None
-    return rows[0]["password"]
+    return [row["password"] for row in rows]
 
 
 def print_table():
@@ -88,7 +83,7 @@ def print_table():
     :return:
     """
     db = get_db()
-    rows: list[Row] = db.execute("SELECT * FROM users;").fetchall()
+    rows: list[sqlite3.Row] = db.execute("SELECT * FROM users;").fetchall()
     for key in rows[0].keys():
         print(key, end=", ")
     print()
