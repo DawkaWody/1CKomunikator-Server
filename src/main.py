@@ -1,10 +1,23 @@
 from enum import Enum
+from os.path import join as join_path
 
 import waitress
 from flask import Flask, request, session
 
-from db import get_user
-from src.db import add_user
+from db import get_user, add_user
+
+
+class LoginErrorReason(Enum):
+    invalid_username = 0,
+    invalid_password = 1,
+    other = 2
+
+
+class AccountCreationErrorReason(Enum):
+    invalid_password = 0,
+    user_already_exists = 1
+    other = 2
+
 
 app = Flask(__name__)
 
@@ -17,64 +30,53 @@ def hello_world() -> str:
 @app.post("/login")
 def login() -> dict:
     """
-    {"username": "usrnm", "password": "passwd"}
-    :return: A dict object containing "success" and "reason" (in case of error) fields
+    {"username", "password"}
+    :return:
     """
     # todo: add hashing function
     username = request.form["username"]
     user_password = request.form["password"]
     password = get_user(username)
 
-    if not password:
+    if not password or user_password != password:
         return {
             "success": False,
             "reason": "Invalid parameter provided."
         }
-
-    if user_password != password:
-        return {
-            "success": False,
-            "reason": "Invalid parameter provided."
-        }
-
     session["username"] = username
     return {
         "success": True,
+        "reason": ""
     }
+
 
 @app.post("/signup")
 def signup() -> dict:
     """
-    {"username": "usrnm", "password": "passwd"}
-    :return: A dict object containing "success" and "reason" (in case of error) fields
+    {"username", "password"}
+    :return:
     """
-    # todo: add hashing function
     username = request.form["username"]
-    user_password = request.form["password"]
-    password = get_user(username)
-
-    if password:
+    password = request.form["password"]
+    users = get_user(username)
+    if users is not None:
         return {
             "success": False,
-            "reason": "Invalid parameter provided."
+            "reason": "User with given username already exists"
         }
-
     add_user(username, password)
-
-    session["username"] = username
+    success = get_user(username) == password
     return {
-        "success": True,
+        "success": success,
+        "reason": ""
     }
 
-@app.post("/logoff")
-def logoff() -> dict:
-    session["2"]
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
     SECRET_KEY='dev',
 )
 
-app.root_path = app.root_path + "\\.."
+app.root_path = join_path(app.root_path, "..")
 if __name__ == "__main__":
     waitress.serve(app, host="0.0.0.0", port="8000")
