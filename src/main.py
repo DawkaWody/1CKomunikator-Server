@@ -45,6 +45,7 @@ def login() -> dict:
         "success": True,
     }
 
+
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
     SECRET_KEY='dev',
