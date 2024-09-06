@@ -51,7 +51,11 @@ def add_user(username, password):
     :param password: Hasło użytkownika
     :return:
     """
+    if len(username) == 0:
+        raise ValueError("Invalid name null")
     db = get_db()
+    if len(get_user(username)) > 0:
+        raise ValueError("Such user exists")
     script = sql_functions_env.get_template("add_user.sql").render(
         username=sqlescape(username),
         password=sqlescape(password),
