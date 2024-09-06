@@ -59,6 +59,12 @@ Działające API - Obsługa wiadomości
 - [x] Nic nie jest gotowe
 
 Inne g$%&a
+- [ ] Całość gotowa
+- [ ] Większość gotowa
+- [ ] Połowa gotowa
+- [ ] Mniejszość gotowa
+- [x] Nic nie jest gotowe
+
 </details>
 
 # Cele
