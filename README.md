@@ -1,23 +1,23 @@
-# Super komunikator
+# 1CKomunikator
 - [Instalacja](#instalacja)
 - [Funkcje](#funkcje)
 - [Dokumentacja](#dokumentacja)
-- [Postęp Rozwoju](#postęp-rzeczy)
+- [Postęp](#postęp)
 - [Cele](#cele)
 - [Do Zrobienia](#do-zrobienia)
 - [Znane Błędy](#znane-błędy)
 
-# Instalacja
+## Instalacja
 ```shell
 pip install -r requirements.txt
 ```
 
-# Funkcje
+## Funkcje
 
-# Dokumentacja
+## Dokumentacja
 jak coś się zrobi to dać dokumentację
 
-## db.py
+### db.py
 zarządza bazą danych
 użycie:
 `db.py clear - clears the database`
@@ -26,36 +26,54 @@ użycie:
 
 `db.py print_table - prints all users`
 
-# Postęp Rozwoju
-
-● Całkowicie gotowe
-
-○ Częściowo gotowe
-
-°  Mało gotowe
-
-   Nic nie jest gotowe
+## Postęp
 
 <details>
 <summary> Postępy </summary>
-° Podstawa serwera
 
-  Obsługa bazy danych
+### Podstawa serwera
+- [ ] Całość gotowa
+- [ ] Większość gotowa
+- [ ] Połowa gotowa
+- [x] Mniejszość gotowa
+- [ ] Nic nie jest gotowe
 
-  Działające API - Weryfikacja danych
+### Obsługa bazy danych
+- [ ] Całość gotowa
+- [ ] Większość gotowa
+- [ ] Połowa gotowa
+- [ ] Mniejszość gotowa
+- [x] Nic nie jest gotowe
 
-  Działające API - Obsługa wiadomości
+### Działające API - Weryfikacja danych
+- [ ] Całość gotowa
+- [ ] Większość gotowa
+- [ ] Połowa gotowa
+- [ ] Mniejszość gotowa
+- [x] Nic nie jest gotowe
 
-  Inne g$%&a
+### Działające API - Obsługa wiadomości
+- [ ] Całość gotowa
+- [ ] Większość gotowa
+- [ ] Połowa gotowa
+- [ ] Mniejszość gotowa
+- [x] Nic nie jest gotowe
+
+### Inne g$%&a
+- [ ] Całość gotowa
+- [ ] Większość gotowa
+- [ ] Połowa gotowa
+- [ ] Mniejszość gotowa
+- [x] Nic nie jest gotowe
+
 </details>
 
-# Cele
+## Cele
 
-# Do Zrobienia
- - [ ] Strona + Serwer
+## Do Zrobienia
+ - [ ] Strona (Serwer)
  - [ ] Baza Danych
  - [ ] Szyfrowanie
- - [ ] api
- - [ ] apka
+ - [ ] API
 
-# Znane Błędy
+## Znane Błędy
