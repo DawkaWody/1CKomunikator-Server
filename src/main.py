@@ -40,7 +40,7 @@ def login() -> dict:
     #get_user(data["username])
     #Sprawdzenie poprawności hasła, zalogowanie
 
-    return { "Success": False, "reason": LoginFailureReason.invalid_password }
+    return { "Success": False, "reason": LoginErrorReason.invalid_password }
 
 
 
