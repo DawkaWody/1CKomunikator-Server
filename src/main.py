@@ -36,15 +36,27 @@ def login() -> dict:
     username = request.form["username"]
     user_password = request.form["password"]
     password = get_user(username)
+
+    if not password:
+        return {
+            "success": False,
+            "reason": "Invalid parameter provided."
+        }
+
     if user_password != password:
         return {
             "success": False,
-            "reason": LoginErrorReason.invalid_password
+            "reason": "Invalid parameter provided."
         }
     session["username"] = username
     return {
         "success": True,
     }
+
+@app.post("/signup")
+def signup() -> dict:
+
+
 
 
 app.config.from_mapping(
