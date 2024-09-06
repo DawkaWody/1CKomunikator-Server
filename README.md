@@ -2,7 +2,7 @@
 - [Instalacja](#instalacja)
 - [Funkcje](#funkcje)
 - [Dokumentacja](#dokumentacja)
-- [Postęp Rozwoju](#postęp-rzeczy)
+- [Postęp Rozwoju](#postęp-rozwoju)
 - [Cele](#cele)
 - [Do Zrobienia](#do-zrobienia)
 - [Znane Błędy](#znane-błędy)
