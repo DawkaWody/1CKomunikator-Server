@@ -1,16 +1,26 @@
-import flask
+from flask import Flask, request
 import waitress
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
 
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
 
-@app.route("/link")
-def link() -> str:
-    return "<a href=\"/\">Such a clicky link!</a>"
+
+@app.post("/login")
+def login() -> str:
+    """
+    {"username", "password"}
+    :return:
+    """
+    # todo: add hsshing function p
+    data: dict = request.form
+    print(data["username"])
+    return "Test"
+
+
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
