@@ -8,6 +8,7 @@ class LoginErrorReason(Enum):
     invalid_password = 1,
     other = 2
 
+
 class AccountCreationErrorReason(Enum):
     invalid_password = 0,
     user_already_exists = 1
