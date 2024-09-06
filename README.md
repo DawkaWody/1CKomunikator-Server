@@ -28,10 +28,13 @@ użycie:
 
 # Postęp Rozwoju
 
-● - Całkowicie gotowe <br>
-○ - Częściowo gotowe <br>
-°  - Mało gotowe <br>
-   - Nic nie jest gotowe <br>
+● - Całkowicie gotowe
+
+○ - Częściowo gotowe
+
+°  - Mało gotowe
+
+   - Nic nie jest gotowe
 
 <details>
 <summary> Postępy </summary>
