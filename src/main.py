@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from enum import Enum
 
 import waitress
@@ -19,30 +18,17 @@ class AccountCreationErrorReason(Enum):
 
 app = Flask(__name__)
 
-=======
-from flask import Flask, request
-import waitress
-
-app = Flask(__name__)
->>>>>>> bbd610b (/login/ działa na zapytania post)
-
-
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
 
 
 @app.post("/login")
-<<<<<<< HEAD
 def login() -> dict:
-=======
-def login() -> str:
->>>>>>> bbd610b (/login/ działa na zapytania post)
     """
     {"username", "password"}
     :return:
     """
-<<<<<<< HEAD
     # todo: add hashing function
     username = request.form["username"]
     input_password = request.form["password"]
@@ -58,14 +44,6 @@ def login() -> str:
     return {
         "success": True,
     }
-=======
-    # todo: add hsshing function p
-    data: dict = request.form
-    print(data["username"])
-    return "Test"
-
-
->>>>>>> bbd610b (/login/ działa na zapytania post)
 
 app.config.from_mapping(
     DATABASE="./main_db.sqlite",
