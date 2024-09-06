@@ -74,7 +74,7 @@ def get_user(username) -> list[str]:
         username=sqlescape(username),
     )
     rows = db.execute(script.strip()).fetchall()
-    return [row["passowrd"] for row in rows]
+    return [row["password"] for row in rows]
 
 
 def print_table():
