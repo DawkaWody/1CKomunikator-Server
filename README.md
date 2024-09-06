@@ -2,7 +2,7 @@
 - [Instalacja](#instalacja)
 - [Funkcje](#funkcje)
 - [Dokumentacja](#dokumentacja)
-- [Postęp Rozwoju](#postęp-rozwoju)
+- [Postęp](#postęp)
 - [Cele](#cele)
 - [Do Zrobienia](#do-zrobienia)
 - [Znane Błędy](#znane-błędy)
@@ -26,7 +26,7 @@ użycie:
 
 `db.py print_table - prints all users`
 
-# Postęp Rozwoju
+# Postęp
 
 <details>
 <summary> Postępy </summary>
