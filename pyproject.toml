@@ -18,4 +18,4 @@ authors = [
 description = "Comunicator for class 1c"
 
 [project.optional-dependencies]
-testing = ["requests", "pytest"]
+testing = ["requests", "pytest", "psutil"]

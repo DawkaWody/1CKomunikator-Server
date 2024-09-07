@@ -3,26 +3,19 @@ try:
     __import__("requests")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
-from datetime import datetime
-from pathlib import Path
 from sqlite3 import connect
-from time import sleep
+from uuid import uuid1
 
 import pytest
 
 import db
 from main import app
+from utils import root
 
-timestamp = lambda: datetime.now().isoformat().replace(":", "-")
-
-db_id = 0
 
 @pytest.fixture
 def db_handle():
-    global db_id
-    print(timestamp())
-    database_folder = Path.cwd() / "tmp" / f"test_database{timestamp()}I{db_id}"
-    db_id += 1
+    database_folder = root / "tmp" / f"test_database{uuid1().hex}"
     database_folder.mkdir()
     app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
     # creating the db
@@ -84,11 +77,11 @@ def test_close_db_opened(monkeypatch):
             nonlocal closed
             closed = True
 
-    def mock_pop(name, default):
-        return MockDb
+    class MockG:
+        def pop(self, name, default):
+            return MockDb()
 
-    monkeypatch.setattr("db.g.pop", mock_pop)
-
+    monkeypatch.setattr("db.g", MockG())
     with app.app_context():
         db.close_db()
 
@@ -96,9 +89,11 @@ def test_close_db_opened(monkeypatch):
 
 
 def test_close_db_closed(monkeypatch):
-    def mock_pop(name, default):
-        return None
+    class MockG:
+        def pop(self, name, default):
+            return None
+
+    monkeypatch.setattr("db.g", MockG())
 
     with app.app_context():
-        monkeypatch.setattr("db.g.pop", mock_pop)
         db.close_db()
