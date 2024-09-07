@@ -30,7 +30,7 @@ def db_handle():
             rmtree(path)
         except PermissionError:
             from sys import stderr
-            print("err", file=stderr)
+            print("err", file=stderr
         else:
             break
 
