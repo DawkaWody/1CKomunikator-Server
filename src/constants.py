@@ -13,5 +13,5 @@ else:
             root = parent
             break
     else:
-        raise ValueError("cannot find project root")
+        raise ValueError(f"cannot find project root {root}")
 
