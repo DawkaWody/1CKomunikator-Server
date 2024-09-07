@@ -9,10 +9,8 @@ print(root.name)
 
 if root.name.lower() in APP_NAMES:
     pass  # ok
-elif root.name in APP_NAMES:
+elif root.parent.name.lower() in APP_NAMES:
     root = root.parent
-elif root.name == "tests":
-    root = Path("../")
 else:
     for parent in root.parents:
         if parent.name in APP_NAMES:
