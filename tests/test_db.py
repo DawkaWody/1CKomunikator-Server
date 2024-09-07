@@ -24,7 +24,6 @@ def db_handle():
     (database_folder / "test_db.sqlite").unlink()
     database_folder.rmdir()
 
-
 def fill_db(db_handle):
     db_handle.executescript("""
 CREATE TABLE users (
@@ -43,7 +42,6 @@ VALUES (?, ?);
         ("very_long_name_to_check_for_character_limit", "very_long_password_to_check_for_character_limit")
     ])
 
-
 def test_init_db_full(db_handle, monkeypatch):
     fill_db(db_handle)
 
@@ -58,7 +56,6 @@ def test_init_db_full(db_handle, monkeypatch):
     result = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not clear all"
 
-
 def test_init_db_empty(db_handle):
     with app.app_context():
         db.init_db()
@@ -66,7 +63,6 @@ def test_init_db_empty(db_handle):
     assert len(tables) == 1, "init_db() did not create the table"
     result = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not cleer all"
-
 
 def test_close_db_opened(monkeypatch):
     closed = False
@@ -85,7 +81,6 @@ def test_close_db_opened(monkeypatch):
         db.close_db()
 
     assert closed, "db not closed"
-
 
 def test_close_db_closed(monkeypatch):
     class MockG:
