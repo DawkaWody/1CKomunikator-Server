@@ -5,7 +5,7 @@ from flask import current_app, g
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from sqlescapy import sqlescape
 
-from utils import root
+from constants import root
 
 # g is per-request state
 sql_functions_env = Environment(

@@ -10,7 +10,7 @@ import pytest
 
 import db
 from main import app
-from utils import root
+from constants import root
 
 
 @pytest.fixture

@@ -5,7 +5,7 @@ import waitress
 from flask import Flask, request, session
 
 from db import get_user, add_user
-from utils import root
+from constants import root
 
 
 class LoginErrorReason(Enum):
