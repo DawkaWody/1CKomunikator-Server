@@ -10,19 +10,19 @@ import pytest
 import db
 from main import app
 from utils import root
+import os
 
 
 @pytest.fixture
 def db_handle():
-    database_folder = root / "tmp" / f"test_database{uuid1().hex}"
-    database_folder.mkdir()
-    app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
+    database_folder = root.name + f"/tmp/test_database{uuid1().hex}"
+    os.makedirs(database_folder)
+    app.config["DATABASE"] = str(database_folder + "test_db.sqlite")
     # creating the db
     handle = connect(app.config["DATABASE"])
     yield handle
     handle.close()
-    (database_folder / "test_db.sqlite").unlink()
-    database_folder.rmdir()
+    os.rmdir(database_folder)
 
 
 def fill_db(db_handle):
