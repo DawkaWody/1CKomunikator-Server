@@ -41,43 +41,54 @@ zarządza bazą danych
 <summary> Postępy </summary>
 
 ### Podstawa serwera
-- [ ] Całość gotowa
-- [ ] Większość gotowa
-- [ ] Połowa gotowa
-- [x] Mniejszość gotowa
-- [ ] Nic nie jest gotowe
+- [ ] Całość gotowa     (100%)
+- [ ] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [x] Mniejszość gotowa (~25%)
+- [ ] Nic nie jest gotowe (0%)
 
 ### Obsługa bazy danych
-- [ ] Całość gotowa
-- [ ] Większość gotowa
-- [ ] Połowa gotowa
-- [ ] Mniejszość gotowa
-- [x] Nic nie jest gotowe
+- [ ] Całość gotowa     (100%)
+- [ ] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [x] Mniejszość gotowa (~25%)
+- [ ] Nic nie jest gotowe (0%)
 
 ### Działające API - Weryfikacja danych
-- [ ] Całość gotowa
-- [ ] Większość gotowa
-- [ ] Połowa gotowa
-- [ ] Mniejszość gotowa
-- [x] Nic nie jest gotowe
+- [ ] Całość gotowa     (100%)
+- [x] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [ ] Mniejszość gotowa (~25%)
+- [ ] Nic nie jest gotowe (0%)
 
 ### Działające API - Obsługa wiadomości
-- [ ] Całość gotowa
-- [ ] Większość gotowa
-- [ ] Połowa gotowa
-- [ ] Mniejszość gotowa
-- [x] Nic nie jest gotowe
+- [ ] Całość gotowa     (100%)
+- [ ] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [ ] Mniejszość gotowa (~25%)
+- [x] Nic nie jest gotowe (0%)
+
+### Szyfrowanie
+- [ ] Całość gotowa     (100%)
+- [ ] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [ ] Mniejszość gotowa (~25%)
+- [ ] Nic nie jest gotowe (0%)
 
 ### Inne g$%&a
-- [ ] Całość gotowa
-- [ ] Większość gotowa
-- [ ] Połowa gotowa
-- [ ] Mniejszość gotowa
-- [x] Nic nie jest gotowe
+- [ ] Całość gotowa     (100%)
+- [ ] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [ ] Mniejszość gotowa (~25%)
+- [x] Nic nie jest gotowe (0%)
 
 </details>
 
 ## Cele
+- API po stronie serwera, obłsugujące logowanie i tworzenie kont, wysyłanie, pobieranie, zarządzanie, odpowiadanie - wiadomości
+- Szyfrowanie wiadomości, zabezpieczemie przed możliością odczytu po stronie serwera
+- Strona aplikacji obsługująca całe API
+
 
 ## Do Zrobienia
  - [ ] Strona (Serwer)
