@@ -63,6 +63,6 @@ app.config.from_mapping(
     DATABASE=root / "main_db.sqlite",
 )
 
-app.root_path = join_path(app.root_path, "..")
+app.root_path = str(root)
 if __name__ == "__main__":
     waitress.serve(app, host="0.0.0.0", port="8000")
