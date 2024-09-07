@@ -1,5 +1,4 @@
 from sqlite3 import Connection, connect, PARSE_DECLTYPES, Row
-from typing import Optional
 
 from flask import current_app, g
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -26,7 +25,7 @@ def get_db() -> Connection:
     return g.db
 
 
-def close_db():
+def close_db() -> None:
     """
     Zamyka uchwyt do bazy danych
     """
@@ -36,7 +35,7 @@ def close_db():
         db.close()
 
 
-def init_db():
+def init_db() -> None:
     """
     czyści bazę danych i ją tworzy
     """
@@ -45,7 +44,7 @@ def init_db():
     db.executescript(script)
 
 
-def add_user(username, password):
+def add_user(username, password) -> None:
     """
     dodaje użytkownika
     :param username: Nazwa użytkownika
@@ -64,7 +63,7 @@ def add_user(username, password):
     db.executescript(script)
 
 
-def get_user(username) -> Optional[str]:
+def get_user(username) -> str:
     """
     zwraca hasło
     :param username: Nazwa użytkownika
@@ -74,15 +73,12 @@ def get_user(username) -> Optional[str]:
     script = sql_functions_env.get_template("get_user.sql").render(
         username=sqlescape(username),
     )
-    rows = db.execute(script.strip()).fetchall()
-    if len(rows) > 1:
-        print(f"Multiple passwords for user {username}")
-    if len(rows) == 0:
-        return None
-    return rows[0]["password"]
+    row = db.execute(script.strip()).fetchone()
+
+    return row["password"]
 
 
-def print_table():
+def print_table() -> None:
     """
     Wypisuje całą tabelę użytkowników w formacie csv
     :return:
@@ -98,7 +94,7 @@ def print_table():
         print()
 
 
-def print_help():
+def print_help() -> None:
     """
     Wypisuje sposób użycia programu
     :return:
@@ -111,7 +107,7 @@ db.py get <user>            - gets password about
 """)
 
 
-def main():
+def main() -> None:
     """
     główna funkcja
     :return:
