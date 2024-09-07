@@ -21,6 +21,6 @@ description = "Comunicator for class 1c"
 testing = ["pytest"]
 
 [tool.pytest.ini_options]
-test_paths = [
+testpaths = [
   "tests"
 ]
