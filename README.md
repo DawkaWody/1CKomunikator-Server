@@ -37,6 +37,8 @@ zarządza bazą danych
 
 ## Postęp
 
+### **Postęp: $$20\frac{5}{6}$$%**
+
 <details>
 <summary> Postępy </summary>
 
@@ -73,7 +75,7 @@ zarządza bazą danych
 - [ ] Większość gotowa  (~75%)
 - [ ] Połowa gotowa     (~50%)
 - [ ] Mniejszość gotowa (~25%)
-- [ ] Nic nie jest gotowe (0%)
+- [x] Nic nie jest gotowe (0%)
 
 ### Inne g$%&a
 - [ ] Całość gotowa     (100%)

@@ -10,20 +10,31 @@ import pytest
 import db
 from main import app
 from utils import root
-import os
+from shutil import rmtree
 
 
 @pytest.fixture
 def db_handle():
     database_folder = root.name + f"/tmp/test_database{uuid1().hex}"
     os.makedirs(database_folder)
-    app.config["DATABASE"] = str(database_folder + "test_db.sqlite")
+    database_folder = root / "tmp" / f"test_database{uuid1().hex}"
+    database_folder.mkdir(parents=True, exist_ok=True)
+    app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
     # creating the db
     handle = connect(app.config["DATABASE"])
     yield handle
     handle.close()
     os.rmdir(database_folder)
-
+    # database_folder.rmdir()
+    path = str(database_folder)
+    while True:
+        try:
+            rmtree(path)
+        except PermissionError:
+            from sys import stderr
+            print("err", file=stderr)
+        else:
+            break
 
 def fill_db(db_handle):
     db_handle.executescript("""
