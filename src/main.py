@@ -1,23 +1,9 @@
-from enum import Enum
 from os.path import join as join_path
 
 import waitress
 from flask import Flask, request, session
 
 from db import get_user, add_user
-
-
-class LoginErrorReason(Enum):
-    invalid_username = 0,
-    invalid_password = 1,
-    other = 2
-
-
-class AccountCreationErrorReason(Enum):
-    invalid_password = 0,
-    user_already_exists = 1
-    other = 2
-
 
 app = Flask(__name__)
 
