@@ -1,15 +1,19 @@
 from pathlib import Path
+from typing import Literal
 
-APP_NAME = "1CKomunikator"
+APP_NAMES = ["1ckomunikator", "1ckomunikator-server"]
 
 root = Path.cwd()
-if root.name == APP_NAME:
+
+print(root.name)
+
+if root.name.lower() in APP_NAMES:
     pass  # ok
-elif root.parent.name == APP_NAME:
+elif root.parent.name.lower() in APP_NAMES:
     root = root.parent
 else:
     for parent in root.parents:
-        if parent.name == APP_NAME:
+        if parent.name in APP_NAMES:
             root = parent
             break
     else:

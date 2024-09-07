@@ -4,6 +4,7 @@ import waitress
 from flask import Flask, request, session
 
 from db import get_user, add_user
+from utils import root
 
 app = Flask(__name__)
 
@@ -59,8 +60,7 @@ def signup() -> dict:
 
 
 app.config.from_mapping(
-    DATABASE="./main_db.sqlite",
-    SECRET_KEY='dev',
+    DATABASE=root / "main_db.sqlite",
 )
 
 app.root_path = join_path(app.root_path, "..")

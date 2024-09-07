@@ -1,6 +1,5 @@
 try:
     __import__("pytest")
-    __import__("requests")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
 from sqlite3 import connect
@@ -11,18 +10,31 @@ import pytest
 import db
 from main import app
 from utils import root
+from shutil import rmtree
+
 
 @pytest.fixture
 def db_handle():
+    database_folder = root.name + f"/tmp/test_database{uuid1().hex}"
+    os.makedirs(database_folder)
     database_folder = root / "tmp" / f"test_database{uuid1().hex}"
-    database_folder.mkdir()
+    database_folder.mkdir(parents=True, exist_ok=True)
     app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
     # creating the db
     handle = connect(app.config["DATABASE"])
     yield handle
     handle.close()
-    (database_folder / "test_db.sqlite").unlink()
-    database_folder.rmdir()
+    os.rmdir(database_folder)
+    # database_folder.rmdir()
+    path = str(database_folder)
+    while True:
+        try:
+            rmtree(path)
+        except PermissionError:
+            from sys import stderr
+            print("err", file=stderr)
+        else:
+            break
 
 def fill_db(db_handle):
     db_handle.executescript("""
@@ -42,6 +54,7 @@ VALUES (?, ?);
         ("very_long_name_to_check_for_character_limit", "very_long_password_to_check_for_character_limit")
     ])
 
+
 def test_init_db_full(db_handle, monkeypatch):
     fill_db(db_handle)
 
@@ -56,6 +69,7 @@ def test_init_db_full(db_handle, monkeypatch):
     result = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not clear all"
 
+
 def test_init_db_empty(db_handle):
     with app.app_context():
         db.init_db()
@@ -63,6 +77,7 @@ def test_init_db_empty(db_handle):
     assert len(tables) == 1, "init_db() did not create the table"
     result = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not cleer all"
+
 
 def test_close_db_opened(monkeypatch):
     closed = False
@@ -81,6 +96,7 @@ def test_close_db_opened(monkeypatch):
         db.close_db()
 
     assert closed, "db not closed"
+
 
 def test_close_db_closed(monkeypatch):
     class MockG:
