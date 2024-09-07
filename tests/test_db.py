@@ -23,10 +23,7 @@ def db_handle():
     yield handle
     handle.close()
     path = str(database_folder)
-    try:
-        rmtree(path)
-    except PermissionError:
-        print("can't cleanup")
+    rmtree(path, ignore_errors=True)
 
 
 def fill_db(db_handle):

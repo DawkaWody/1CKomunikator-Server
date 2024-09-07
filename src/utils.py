@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Literal
 
 APP_NAMES = ["1ckomunikator", "1ckomunikator-server"]
 
@@ -18,4 +17,3 @@ else:
             break
     else:
         raise ValueError("cannot find project root")
-
