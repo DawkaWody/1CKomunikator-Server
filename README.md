@@ -37,7 +37,7 @@ zarządza bazą danych
 
 ## Postęp
 
-### **Postęp: $$20\frac{5}{6}$$%**
+### **Postęp: 20$$\frac{5}{6}$$%**
 
 <details>
 <summary> Postępy </summary>
