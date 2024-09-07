@@ -4,7 +4,7 @@ import waitress
 from flask import Flask, request, session
 
 from db import get_user, add_user
-from constants import root
+from utils import root
 
 app = Flask(__name__)
 

@@ -1,6 +1,5 @@
 try:
     __import__("pytest")
-    __import__("requests")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
 from sqlite3 import connect
@@ -10,7 +9,7 @@ import pytest
 
 import db
 from main import app
-from constants import root
+from utils import root
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ from flask import current_app, g
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from sqlescapy import sqlescape
 
-from constants import root
+from utils import root
 
 # g is per-request state
 sql_functions_env = Environment(
@@ -12,7 +12,6 @@ sql_functions_env = Environment(
     autoescape=select_autoescape(),
     cache_size=0,
 )
-
 
 
 def get_db() -> Connection:
