@@ -11,6 +11,7 @@ sql_functions_env = Environment(
 )
 
 
+
 def get_db() -> Connection:
     """
     zwraca uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych
