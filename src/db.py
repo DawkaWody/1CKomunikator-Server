@@ -1,4 +1,5 @@
 from sqlite3 import Connection, connect, PARSE_DECLTYPES, Row
+from typing import Optional
 
 from flask import current_app, g
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -23,6 +24,7 @@ def get_db() -> Connection:
         g.db = connect(
             current_app.config["DATABASE"],
             detect_types=PARSE_DECLTYPES,
+            autocommit=True,
         )
         g.db.row_factory = Row
     return g.db
@@ -57,7 +59,7 @@ def add_user(username, password) -> None:
     if len(username) == 0:
         raise ValueError("Invalid name null")
     db = get_db()
-    if len(get_user(username)) > 0:
+    if get_user(username) is not None:
         raise ValueError("Such user exists")
     script = sql_functions_env.get_template("add_user.sql").render(
         username=sqlescape(username),
@@ -66,7 +68,7 @@ def add_user(username, password) -> None:
     db.executescript(script)
 
 
-def get_user(username) -> str:
+def get_user(username) -> Optional[str]:
     """
     zwraca hasło
     :param username: Nazwa użytkownika
@@ -78,7 +80,7 @@ def get_user(username) -> str:
     )
     row = db.execute(script.strip()).fetchone()
 
-    return row["password"]
+    return row["password"] if row is not None else None
 
 
 def print_table() -> None:
