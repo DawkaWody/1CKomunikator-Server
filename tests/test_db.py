@@ -2,6 +2,7 @@ try:
     __import__("pytest")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
+from shutil import rmtree
 from sqlite3 import connect
 from uuid import uuid1
 
@@ -10,13 +11,10 @@ import pytest
 import db
 from main import app
 from utils import root
-from shutil import rmtree
 
 
 @pytest.fixture
 def db_handle():
-    database_folder = root.name + f"/tmp/test_database{uuid1().hex}"
-    os.makedirs(database_folder)
     database_folder = root / "tmp" / f"test_database{uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
     app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
@@ -24,8 +22,6 @@ def db_handle():
     handle = connect(app.config["DATABASE"])
     yield handle
     handle.close()
-    os.rmdir(database_folder)
-    # database_folder.rmdir()
     path = str(database_folder)
     while True:
         try:
@@ -35,6 +31,7 @@ def db_handle():
             print("err", file=stderr)
         else:
             break
+
 
 def fill_db(db_handle):
     db_handle.executescript("""
