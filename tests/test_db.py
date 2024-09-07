@@ -23,14 +23,10 @@ def db_handle():
     yield handle
     handle.close()
     path = str(database_folder)
-    while True:
-        try:
-            rmtree(path)
-        except PermissionError:
-            from sys import stderr
-            print("err", file=stderr)
-        else:
-            break
+    try:
+        rmtree(path)
+    except PermissionError:
+        print("can't cleanup")
 
 
 def fill_db(db_handle):
