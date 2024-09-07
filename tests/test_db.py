@@ -8,7 +8,7 @@ from uuid import uuid1
 
 import pytest
 
-import db
+import src.db
 from main import app
 from utils import root
 
