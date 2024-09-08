@@ -1,8 +1,9 @@
 import waitress
 from flask import Flask, request, session
 
-from db import get_user, add_user
+from db import get_password, add_user, get_db
 from utils import root
+import timeit
 
 app = Flask(__name__)
 
@@ -10,7 +11,6 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
-
 
 @app.post("/login")
 def login() -> dict:
@@ -21,7 +21,7 @@ def login() -> dict:
     # todo: add hashing function
     username = request.form["username"]
     user_password = request.form["password"]
-    password = get_user(username)
+    password = get_password(username)
 
     if not password or user_password != password:
         return {
@@ -43,19 +43,18 @@ def signup() -> dict:
     """
     username = request.form["username"]
     password = request.form["password"]
-    users = get_user(username)
+    users = get_password(username)
     if users is not None:
         return {
             "success": False,
             "reason": "User with given username already exists"
         }
     add_user(username, password)
-    success = get_user(username) == password
+    success = get_password(username) == password
     return {
         "success": success,
         "reason": ""
     }
-
 
 app.config.from_mapping(
     DATABASE=root / "main_db.sqlite",

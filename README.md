@@ -25,14 +25,14 @@ pip install -r requirements.txt
 
 ## Testowanie
 
-# testowanie lokalnie
+### testowanie lokalnie
 
 ```shell
 pip install pytest
 pytest
 ```
 
-# testowanie tak jak na github
+### testowanie tak jak na github
 
 wymagany jest [docker](https://www.docker.com/) \
 (polecam docker desktop) \
@@ -42,11 +42,17 @@ uruchom docker [desktop] oraz wywołaj \
 act
 ```
 
-## Sprawdzanie składni
+### Sprawdzanie składni
 
 ```shell
-pip install flake8
+pip install flake8\
 flake8 .
+```
+
+```shell
+pip install mypy
+mypy --install-types
+mypy .
 ```
 
 ## Dokumentacja
