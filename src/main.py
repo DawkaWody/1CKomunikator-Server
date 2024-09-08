@@ -1,14 +1,12 @@
-from os.path import join as join_path
-
 import waitress
-from flask import Flask, request, session
+import flask
 
-from db import get_password, add_user, get_db
+from db import get_password, add_user, get_db, load_script_templates
 from utils import root
-import timeit
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
+load_script_templates()
 
 @app.route("/")
 def hello_world() -> str:
@@ -21,8 +19,8 @@ def login() -> dict:
     :return:
     """
     # todo: add hashing function
-    username = request.form["username"]
-    user_password = request.form["password"]
+    username = flask.request.form["username"]
+    user_password = flask.request.form["password"]
     password = get_password(username)
 
     if not password or user_password != password:
@@ -30,7 +28,7 @@ def login() -> dict:
             "success": False,
             "reason": "Invalid parameter provided."
         }
-    session["username"] = username
+    flask.session["username"] = username
     return {
         "success": True,
         "reason": ""
@@ -43,8 +41,8 @@ def signup() -> dict:
     {"username", "password"}
     :return:
     """
-    username = request.form["username"]
-    password = request.form["password"]
+    username = flask.request.form["username"]
+    password = flask.request.form["password"]
     users = get_password(username)
     if users is not None:
         return {
