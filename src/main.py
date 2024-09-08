@@ -1,5 +1,3 @@
-from os.path import join as join_path
-
 import waitress
 from flask import Flask, request, session
 
