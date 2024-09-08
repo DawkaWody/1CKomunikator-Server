@@ -79,9 +79,9 @@ class DbManager:
         """
         if username is None or len(username) == 0:
             raise ValueError("Invalid name null")
-        if self.get_password(username):
+        if self.get_password(username) is not None:
             raise ValueError("Such user exists")
-        self.db.executescript(self.template_clear.render(
+        self.db.executescript(self.template_add_user.render(
             username=sqlescapy.sqlescape(username),
             password=sqlescapy.sqlescape(password)
         ).strip())
@@ -96,7 +96,7 @@ class DbManager:
         row = self.db.execute(self.template_get_password.render(
             username=sqlescapy.sqlescape(username)
         ).strip()).fetchone()
-        return row["password"] if row else None
+        return row["password"] if row is not None else None
 
     def print_table(self) -> None:
         """
