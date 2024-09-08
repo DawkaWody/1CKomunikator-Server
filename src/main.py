@@ -6,6 +6,7 @@ from utils import root
 
 app = flask.Flask(__name__)
 
+db = DbManager(app.config.db_path)
 
 @app.route("/")
 def hello_world() -> str:
@@ -21,7 +22,6 @@ def login() -> dict:
     # todo: add hashing function
     username = flask.request.form["username"]
     user_password = flask.request.form["password"]
-    db = DbManager(app.config.db_path)
     password = db.get_password(username)
 
     if not password or user_password != password:
@@ -44,7 +44,6 @@ def signup() -> dict:
     """
     username = flask.request.form["username"]
     password = flask.request.form["password"]
-    db = DbManager(app.config.db_path)
     users = db.get_password(username)
     if users is not None:
         return {
