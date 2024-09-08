@@ -52,7 +52,7 @@ flake8 .
 ```shell
 pip install mypy
 mypy --install-types
-mymy .
+mypy .
 ```
 
 ## Dokumentacja
