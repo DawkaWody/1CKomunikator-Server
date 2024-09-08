@@ -16,3 +16,11 @@ authors = [
   {name = "Wojciech Dudek"}
 ]
 description = "Comunicator for class 1c"
+
+[project.optional-dependencies]
+testing = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests"
+]

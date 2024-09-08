@@ -1,11 +1,10 @@
-from os.path import join as join_path
-
 import waitress
-from flask import Flask, request, session
+import flask
 
-from db import get_user, add_user
+from db import get_password, add_user, get_db
+from utils import root
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 
 @app.route("/")
@@ -20,16 +19,16 @@ def login() -> dict:
     :return:
     """
     # todo: add hashing function
-    username = request.form["username"]
-    user_password = request.form["password"]
-    password = get_user(username)
+    username = flask.request.form["username"]
+    user_password = flask.request.form["password"]
+    password = get_password(username)
 
     if not password or user_password != password:
         return {
             "success": False,
             "reason": "Invalid parameter provided."
         }
-    session["username"] = username
+    flask.session["username"] = username
     return {
         "success": True,
         "reason": ""
@@ -42,16 +41,16 @@ def signup() -> dict:
     {"username", "password"}
     :return:
     """
-    username = request.form["username"]
-    password = request.form["password"]
-    users = get_user(username)
+    username = flask.request.form["username"]
+    password = flask.request.form["password"]
+    users = get_password(username)
     if users is not None:
         return {
             "success": False,
             "reason": "User with given username already exists"
         }
     add_user(username, password)
-    success = get_user(username) == password
+    success = get_password(username) == password
     return {
         "success": success,
         "reason": ""
@@ -59,10 +58,9 @@ def signup() -> dict:
 
 
 app.config.from_mapping(
-    DATABASE="./main_db.sqlite",
-    SECRET_KEY='dev',
+    DATABASE=root / "main_db.sqlite",
 )
 
-app.root_path = join_path(app.root_path, "..")
+app.root_path = str(root)
 if __name__ == "__main__":
     waitress.serve(app, host="0.0.0.0", port="8000")

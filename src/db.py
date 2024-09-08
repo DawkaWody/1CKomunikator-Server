@@ -1,36 +1,43 @@
-from sqlite3 import Connection, connect, PARSE_DECLTYPES, Row
+import typing
+import sqlite3
+import typing
+import flask
+import jinja2
+import sqlescapy
 
-from flask import current_app, g
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-from sqlescapy import sqlescape
+from utils import root
 
 # g is per-request state
-sql_functions_env = Environment(
-    loader=FileSystemLoader("sql_functions"),
-    autoescape=select_autoescape(),
+sql_script_templates_env = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(root / "sql_functions"),
+    autoescape=jinja2.select_autoescape(),
+    cache_size=0,
 )
 
+template_add_user = sql_script_templates_env.get_template("add_user.sql")
+template_get_password = sql_script_templates_env.get_template("get_password.sql")
+template_clear = sql_script_templates_env.get_template("clear.sql")
 
 
-def get_db() -> Connection:
+def get_db() -> sqlite3.Connection:
     """
     zwraca uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych
     :return: Bazę danych
     """
-    if "db" not in g:
-        g.db = connect(
-            current_app.config["DATABASE"],
-            detect_types=PARSE_DECLTYPES,
+    if "db" not in flask.g:
+        flask.g.db = sqlite3.connect(
+            flask.current_app.config["DATABASE"],
+            detect_types=sqlite3.PARSE_DECLTYPES,
         )
-        g.db.row_factory = Row
-    return g.db
+        flask.g.db.row_factory = sqlite3.Row
+    return flask.g.db
 
 
 def close_db() -> None:
     """
     Zamyka uchwyt do bazy danych
     """
-    db = g.pop('db', None)
+    db = flask.g.pop('db', None)
 
     if db is not None:
         db.close()
@@ -40,9 +47,7 @@ def init_db() -> None:
     """
     czyści bazę danych i ją tworzy
     """
-    db = get_db()
-    script = sql_functions_env.get_template("clear.sql").render()
-    db.executescript(script)
+    get_db().executescript(template_clear.render().strip())
 
 
 def add_user(username, password) -> None:
@@ -52,31 +57,27 @@ def add_user(username, password) -> None:
     :param password: Hasło użytkownika
     :return:
     """
-    if len(username) == 0:
+    if username is None or len(username) == 0:
         raise ValueError("Invalid name null")
-    db = get_db()
-    if len(get_user(username)) > 0:
+    if get_password(username):
         raise ValueError("Such user exists")
-    script = sql_functions_env.get_template("add_user.sql").render(
-        username=sqlescape(username),
-        password=sqlescape(password),
-    )
-    db.executescript(script)
+    get_db().executescript(template_clear.render(
+        username=sqlescapy.sqlescape(username),
+        password=sqlescapy.sqlescape(password)
+    ).strip())
 
 
-def get_user(username) -> str:
+def get_password(username) -> typing.Optional[str]:
     """
     zwraca hasło
     :param username: Nazwa użytkownika
     :return:
     """
-    db = get_db()
-    script = sql_functions_env.get_template("get_user.sql").render(
-        username=sqlescape(username),
-    )
-    row = db.execute(script.strip()).fetchone()
 
-    return row["password"]
+    row = get_db().execute(template_get_password.render(
+        username=sqlescapy.sqlescape(username)
+    ).strip()).fetchone()
+    return row["password"] if row else None
 
 
 def print_table() -> None:
@@ -84,8 +85,7 @@ def print_table() -> None:
     Wypisuje całą tabelę użytkowników w formacie csv
     :return:
     """
-    db = get_db()
-    rows: list[Row] = db.execute("SELECT * FROM users;").fetchall()
+    rows: list[sqlite3.Row] = get_db().execute("SELECT * FROM users;").fetchall()
     for key in rows[0].keys():
         print(key, end=", ")
     print()
@@ -115,6 +115,7 @@ def main() -> None:
     """
     from sys import argv
     from main import app
+
     with app.app_context():
         if len(argv) < 2 or argv[1] == "help":
             print_help()
@@ -135,8 +136,8 @@ def main() -> None:
         if argv[1] == "get":
             # program, "get", username
             assert len(argv) == 3, "Usage: db.py get <user>"
-            print(f"Getting passwor of user {argv[2]}...")
-            print(get_user(argv[2]))
+            print(f"Getting password of user {argv[2]}...")
+            print(get_password(argv[2]))
             return
 
         if argv[1] == "print_table":
