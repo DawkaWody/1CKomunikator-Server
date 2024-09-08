@@ -8,9 +8,19 @@ version = "0.0.1"
 dependencies = [
   "flask",
   "waitress",
+  "Jinja2",
+  "sqlescapy",
 ]
 authors = [
   {name = "Michał Opar"},
   {name = "Wojciech Dudek"}
 ]
 description = "Comunicator for class 1c"
+
+[project.optional-dependencies]
+testing = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests"
+]

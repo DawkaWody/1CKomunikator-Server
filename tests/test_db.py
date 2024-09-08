@@ -2,6 +2,7 @@ try:
     __import__("pytest")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
+import pathlib
 import shutil
 import sqlite3
 import uuid
@@ -73,17 +74,21 @@ def test_init_db_full(db_handle, monkeypatch):
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
-    with app.app_context():
-        db.init_db()
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
     assert len(tables) == 1, "init_db() did not create the table"
     result = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not clear all"
 
 
-def test_init_db_empty(db_handle: sqlite3.Connection):
-    with app.app_context():
-        db.init_db()
+def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch):
+    def mock_connect(*args, **kwargs):
+        return db_handle
+
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
     assert len(tables) == 1, "init_db() did not create the table"
     result = db_handle.execute("SELECT * FROM users").fetchall()
@@ -98,26 +103,15 @@ def test_close_db_opened(monkeypatch):
             nonlocal closed
             closed = True
 
-    class MockG:
-        def pop(self, name, default):
-            return MockDb()
-
-    monkeypatch.setattr("db.g", MockG())
-    with app.app_context():
-        db.close_db()
-
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager._db = MockDb()
+    db_manager.close_db()
     assert closed, "db not closed"
 
 
-def test_close_db_closed(monkeypatch):
-    class MockG:
-        def pop(self, name, default):
-            return None
-
-    monkeypatch.setattr("db.g", MockG())
-
-    with app.app_context():
-        db.close_db()
+def test_close_db_closed():
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.close_db()
 
 
 @pytest.mark.parametrize("username", USERNAMES)
@@ -126,11 +120,11 @@ def test_add_user_empty(username, password, monkeypatch, db_handle: sqlite3.Conn
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.connect", mock_connect)
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
 
-    with app.app_context():
-        db.init_db()
-        db.add_user(username, password)
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
+    db_manager.add_user(username, password)
     assert get_db_data(db_handle) == [(sqlescapy.sqlescape(username), sqlescapy.sqlescape(password))], "add_user did not add user"
 
 
@@ -141,10 +135,10 @@ def test_add_user_full(username, password, monkeypatch, db_handle: sqlite3.Conne
         return db_handle
 
     monkeypatch.setattr("db.connect", mock_connect)
-    with app.app_context():
-        db.init_db()
-        fill_db(db_handle)
-        db.add_user(username, password)
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
+    fill_db(db_handle)
+    db_manager.add_user(username, password)
     assert (sqlescapy.sqlescape(username), sqlescapy.sqlescape(password)) in get_db_data(db_handle)
 
 
@@ -153,19 +147,20 @@ def test_add_user_invalid(username, db_handle, monkeypatch):
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.connect", mock_connect)
-    with app.app_context():
-        fill_db(db_handle)
-        with pytest.raises(ValueError):
-            db.add_user(username, "test")
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
+
+    fill_db(db_handle)
+    db_manager = db.DbManager(pathlib.Path())
+    with pytest.raises(ValueError):
+        db_manager.add_user(username, "test")
 
 
 def test_add_user_no_username(db_handle, monkeypatch):
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.connect", mock_connect)
-    with app.app_context():
-        db.init_db()
-        with pytest.raises(ValueError):
-            db.add_user("", "test")
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
+    with pytest.raises(ValueError):
+        db_manager.add_user("", "test")
