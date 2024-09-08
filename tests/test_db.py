@@ -17,7 +17,7 @@ from utils import root
 def db_handle():
     database_folder = root / "tmp" / f"test_database{uuid.uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
-    app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
+    app.config["DATABASE"] = str(database_folder / "test_sqlite")
     # creating the db
     handle = sqlite3.connect(app.config["DATABASE"])
     yield handle
@@ -51,7 +51,7 @@ def test_init_db_full(db_handle, monkeypatch):
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.sqlite3.connect", mock_connect)
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
     with app.app_context():
         db.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
