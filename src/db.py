@@ -45,7 +45,6 @@ def init_db() -> None:
     """
     script = sql_functions_env.get_template("clear.sql").render()
     get_db().executescript(script)
-    close_db()
 
 
 def add_user(username, password) -> None:
@@ -65,7 +64,6 @@ def add_user(username, password) -> None:
             password=sqlescape(password),
         ).strip()
     )
-    close_db()
 
 
 def get_password(username) -> Optional[str]:
@@ -79,7 +77,6 @@ def get_password(username) -> Optional[str]:
                 sql_functions_env.get_template("get_password.sql").render(
                     username=sqlescape(username)).strip()
             ).fetchone()
-    close_db()
     return row["password"] if row else None
 
 
@@ -89,7 +86,6 @@ def print_table() -> None:
     :return:
     """
     rows: list[Row] = get_db().execute("SELECT * FROM users;").fetchall()
-    close_db()
     for key in rows[0].keys():
         print(key, end=", ")
     print()
