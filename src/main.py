@@ -1,7 +1,7 @@
-import waitress
 import flask
+import waitress
 
-from db import get_password, add_user, get_db
+from db import DbManager
 from utils import root
 
 app = flask.Flask(__name__)
@@ -21,7 +21,7 @@ def login() -> dict:
     # todo: add hashing function
     username = flask.request.form["username"]
     user_password = flask.request.form["password"]
-    password = get_password(username)
+    password = db.get_password(username)
 
     if not password or user_password != password:
         return {
@@ -43,24 +43,22 @@ def signup() -> dict:
     """
     username = flask.request.form["username"]
     password = flask.request.form["password"]
-    users = get_password(username)
+    users = db.get_password(username)
     if users is not None:
         return {
             "success": False,
             "reason": "User with given username already exists"
         }
-    add_user(username, password)
-    success = get_password(username) == password
+    db.add_user(username, password)
+    success = db.get_password(username) == password
     return {
         "success": success,
         "reason": ""
     }
 
 
-app.config.from_mapping(
-    DATABASE=root / "main_db.sqlite",
-)
-
+app.config.db_path = root / "main_db.sqlite"
+db = DbManager(app.config.db_path)
 app.root_path = str(root)
 if __name__ == "__main__":
     waitress.serve(app, host="0.0.0.0", port="8000")
