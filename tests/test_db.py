@@ -1,14 +1,13 @@
-from sqlescapy import sqlescape
-
 try:
     __import__("pytest")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
-from shutil import rmtree
-from sqlite3 import connect, Connection
-from uuid import uuid1
+import shutil
+import sqlite3
+import uuid
 
 import pytest
+import sqlescapy
 
 import db
 from main import app
@@ -28,23 +27,23 @@ FILL_DATA_PASSWORDS = ["admin", "t", "password", "very_long_password_to_check_fo
 
 @pytest.fixture
 def db_handle():
-    database_folder = root / "tmp" / f"test_database{uuid1().hex}"
+    database_folder = root / "tmp" / f"test_database{uuid.uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
-    app.config["DATABASE"] = str()
+    app.config["DATABASE"] = str(database_folder / "test_sqlite")
     # creating the db
-    handle = connect(app.config["DATABASE"], autocommit=True)
+    handle = sqlite3.connect(app.config["DATABASE"], autocommit=True)
     yield handle
     handle.close()
     path = str(database_folder)
     try:
         (database_folder / "test_db.sqlite").unlink(missing_ok=True)
     except PermissionError:
-        handle = connect(app.config["DATABASE"], autocommit=True)
+        handle = sqlite3.connect(app.config["DATABASE"], autocommit=True)
         handle.executescript("""DROP TABLE IF EXISTS users;""")
-    rmtree(path, ignore_errors=True)
+    shutil.rmtree(path, ignore_errors=True)
 
 
-def fill_db(db_handle: Connection):
+def fill_db(db_handle: sqlite3.Connection):
     db_handle.executescript("""
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
@@ -73,7 +72,7 @@ def test_init_db_full(db_handle, monkeypatch):
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.connect", mock_connect)
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
     with app.app_context():
         db.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
@@ -82,7 +81,7 @@ def test_init_db_full(db_handle, monkeypatch):
     assert len(result) == 0, "init_db() did not clear all"
 
 
-def test_init_db_empty(db_handle: Connection):
+def test_init_db_empty(db_handle: sqlite3.Connection):
     with app.app_context():
         db.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
@@ -132,7 +131,7 @@ def test_add_user_empty(username, password, monkeypatch, db_handle: Connection):
     with app.app_context():
         db.init_db()
         db.add_user(username, password)
-    assert get_db_data(db_handle) == [(sqlescape(username), sqlescape(password))], "add_user did not add user"
+    assert get_db_data(db_handle) == [(sqlescapy.sqlescape(username), sqlescape(password))], "add_user did not add user"
 
 
 @pytest.mark.parametrize("username", USERNAMES)
@@ -146,7 +145,7 @@ def test_add_user_full(username, password, monkeypatch, db_handle: Connection):
         db.init_db()
         fill_db(db_handle)
         db.add_user(username, password)
-    assert (sqlescape(username), sqlescape(password)) in get_db_data(db_handle)
+    assert (sqlescapy.sqlescape(username), sqlescapy.sqlescape(password)) in get_db_data(db_handle)
 
 
 @pytest.mark.parametrize("username", FILL_DATA_USERNAMES)

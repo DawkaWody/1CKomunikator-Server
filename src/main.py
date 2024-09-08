@@ -1,16 +1,16 @@
 import waitress
 import flask
 
-from db import get_password, add_user, get_db, load_script_templates
+from db import get_password, add_user, get_db
 from utils import root
 
 app = flask.Flask(__name__)
 
-load_script_templates()
 
 @app.route("/")
 def hello_world() -> str:
     return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
+
 
 @app.post("/login")
 def login() -> dict:
@@ -55,6 +55,7 @@ def signup() -> dict:
         "success": success,
         "reason": ""
     }
+
 
 app.config.from_mapping(
     DATABASE=root / "main_db.sqlite",
