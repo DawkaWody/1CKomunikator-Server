@@ -2,9 +2,9 @@ try:
     __import__("pytest")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
-from shutil import rmtree
-from sqlite3 import connect
-from uuid import uuid1
+import shutil
+import sqlite3
+import uuid
 
 import pytest
 
@@ -15,15 +15,15 @@ from utils import root
 
 @pytest.fixture
 def db_handle():
-    database_folder = root / "tmp" / f"test_database{uuid1().hex}"
+    database_folder = root / "tmp" / f"test_database{uuid.uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
     app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
     # creating the db
-    handle = connect(app.config["DATABASE"])
+    handle = sqlite3.connect(app.config["DATABASE"])
     yield handle
     handle.close()
     path = str(database_folder)
-    rmtree(path, ignore_errors=True)
+    shutil.rmtree(path, ignore_errors=True)
 
 
 def fill_db(db_handle):
@@ -51,7 +51,7 @@ def test_init_db_full(db_handle, monkeypatch):
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.connect", mock_connect)
+    monkeypatch.setattr("db.sqlite3.connect", mock_connect)
     with app.app_context():
         db.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
