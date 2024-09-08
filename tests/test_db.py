@@ -58,7 +58,7 @@ VALUES (?, ?);
 """, list(zip(FILL_DATA_USERNAMES, FILL_DATA_PASSWORDS)))
 
 
-def get_db_data(db_handle: Connection):
+def get_db_data(db_handle: sqlite3.Connection):
     rows = db_handle.execute("SELECT * FROM users").fetchall()
     result = []
     for row in rows:
@@ -122,7 +122,7 @@ def test_close_db_closed(monkeypatch):
 
 @pytest.mark.parametrize("username", USERNAMES)
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_add_user_empty(username, password, monkeypatch, db_handle: Connection):
+def test_add_user_empty(username, password, monkeypatch, db_handle: sqlite3.Connection):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -131,12 +131,12 @@ def test_add_user_empty(username, password, monkeypatch, db_handle: Connection):
     with app.app_context():
         db.init_db()
         db.add_user(username, password)
-    assert get_db_data(db_handle) == [(sqlescapy.sqlescape(username), sqlescape(password))], "add_user did not add user"
+    assert get_db_data(db_handle) == [(sqlescapy.sqlescape(username), sqlescapy.sqlescape(password))], "add_user did not add user"
 
 
 @pytest.mark.parametrize("username", USERNAMES)
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_add_user_full(username, password, monkeypatch, db_handle: Connection):
+def test_add_user_full(username, password, monkeypatch, db_handle: sqlite3.Connection):
     def mock_connect(*args, **kwargs):
         return db_handle
 
