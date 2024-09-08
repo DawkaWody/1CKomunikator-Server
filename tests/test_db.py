@@ -77,12 +77,15 @@ def test_close_db_opened(monkeypatch):
     closed = False
 
     class MockDb:
+        def __init__(self):
+            pass
+
         def close(self):
             nonlocal closed
             closed = True
 
     db_manager = db.DbManager(pathlib.Path())
-    db_manager.__db = MockDb()
+    db_manager._db = MockDb()
     db_manager.close_db()
     assert closed, "db not closed"
 

@@ -27,33 +27,39 @@ class DbManager:
         self.template_add_user = template_add_user or self.sql_script_templates_env.get_template("add_user.sql")
         self.template_get_password = template_get_password or self.sql_script_templates_env.get_template("get_password.sql")
         self.template_clear = template_clear or self.sql_script_templates_env.get_template("clear.sql")
-        self.__db = None
+        self._db = None
 
     def get_db(self):
         """
         aktualizuje uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych
         :return: Bazę danych
         """
-        self.__db = sqlite3.connect(
+        self._db = sqlite3.connect(
             self.db_path,
             detect_types=sqlite3.PARSE_DECLTYPES,
             autocommit=True,
         )
-        self.__db.row_factory = sqlite3.Row
+        self._db.row_factory = sqlite3.Row
 
     def close_db(self) -> None:
         """
         Zamyka uchwyt do bazy danych
         """
-        if self.__db is not None:
-            self.__db.close()
-            self.__db = None
+        print("A") # self.__db is not None == True
+        t = self._db is not None
+        a = self._db
+        print(f"{a=} {type(a)=}", file=__import__("sys").stderr)
+        if t and (a==a):
+            print("B")
+            self._db.close()
+            self._db = None
+        print("C")
 
     @property
     def db(self):
-        if self.__db is None:
+        if self._db is None:
             self.get_db()
-        return self.__db
+        return self._db
 
     @db.deleter
     def db(self):
