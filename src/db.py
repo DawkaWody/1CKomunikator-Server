@@ -1,4 +1,5 @@
 from sqlite3 import Connection, connect, PARSE_DECLTYPES, Row
+from typing import Optional
 
 from flask import current_app, g
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -42,9 +43,9 @@ def init_db() -> None:
     """
     czyści bazę danych i ją tworzy
     """
-    db = get_db()
     script = sql_functions_env.get_template("clear.sql").render()
-    db.executescript(script)
+    get_db().executescript(script)
+    close_db()
 
 
 def add_user(username, password) -> None:
@@ -54,31 +55,32 @@ def add_user(username, password) -> None:
     :param password: Hasło użytkownika
     :return:
     """
-    if len(username) == 0:
+    if username is None or len(username) == 0:
         raise ValueError("Invalid name null")
-    db = get_db()
-    if len(get_user(username)) > 0:
+    if get_password(username):
         raise ValueError("Such user exists")
-    script = sql_functions_env.get_template("add_user.sql").render(
-        username=sqlescape(username),
-        password=sqlescape(password),
+    get_db().executescript(
+        sql_functions_env.get_template("add_user.sql").render(
+            username=sqlescape(username),
+            password=sqlescape(password),
+        ).strip()
     )
-    db.executescript(script)
+    close_db()
 
 
-def get_user(username) -> str:
+def get_password(username) -> Optional[str]:
     """
     zwraca hasło
     :param username: Nazwa użytkownika
     :return:
     """
-    db = get_db()
-    script = sql_functions_env.get_template("get_user.sql").render(
-        username=sqlescape(username),
-    )
-    row = db.execute(script.strip()).fetchone()
 
-    return row["password"]
+    row = get_db().execute(
+                sql_functions_env.get_template("get_password.sql").render(
+                    username=sqlescape(username)).strip()
+            ).fetchone()
+    close_db()
+    return row["password"] if row else None
 
 
 def print_table() -> None:
@@ -86,8 +88,8 @@ def print_table() -> None:
     Wypisuje całą tabelę użytkowników w formacie csv
     :return:
     """
-    db = get_db()
-    rows: list[Row] = db.execute("SELECT * FROM users;").fetchall()
+    rows: list[Row] = get_db().execute("SELECT * FROM users;").fetchall()
+    close_db()
     for key in rows[0].keys():
         print(key, end=", ")
     print()
@@ -138,7 +140,7 @@ def main() -> None:
             # program, "get", username
             assert len(argv) == 3, "Usage: db.py get <user>"
             print(f"Getting passwor of user {argv[2]}...")
-            print(get_user(argv[2]))
+            print(get_password(argv[2]))
             return
 
         if argv[1] == "print_table":
