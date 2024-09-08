@@ -58,25 +58,6 @@ def signup() -> dict:
         "reason": ""
     }
 
-import typing
-
-@app.route("/test")
-def which_faster() -> str:
-    #parsed_query_params: dict[str, str] = { (data := i.split('='))[0]: data[1] for i in request.url.split('?')[1].split('&') }
-    query_params: list[str] = request.url.split('?')[1].split('&')
-
-    username, password = query_params[0].split('=')[1], query_params[1].split('=')[1]
-
-    if not get_password(username) is None:
-        return str("Fail")
-
-    add_user(username, password)
-
-    tm: float = timeit.timeit(lambda: get_password(username) == password, number=1000)
-
-    return str(tm / 1000)
-
-
 app.config.from_mapping(
     DATABASE=root / "main_db.sqlite",
 )
