@@ -9,7 +9,7 @@ app = flask.Flask(__name__)
 
 @app.route("/")
 def hello_world() -> str:
-    return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
+    return "<p>Hello, World!</p><a href=https://pl.pornhub.com>A linky link!</a>"
 
 
 @app.post("/login")
