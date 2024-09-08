@@ -6,7 +6,6 @@ from utils import root
 
 app = flask.Flask(__name__)
 
-db = DbManager(app.config.db_path)
 
 @app.route("/")
 def hello_world() -> str:
@@ -59,7 +58,7 @@ def signup() -> dict:
 
 
 app.config.db_path = root / "main_db.sqlite"
-
+db = DbManager(app.config.db_path)
 app.root_path = str(root)
 if __name__ == "__main__":
     waitress.serve(app, host="0.0.0.0", port="8000")

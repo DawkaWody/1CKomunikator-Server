@@ -84,7 +84,6 @@ def test_close_db_opened(monkeypatch):
     db_manager = db.DbManager(pathlib.Path())
     db_manager.__db = MockDb()
     db_manager.close_db()
-
     assert closed, "db not closed"
 
 
