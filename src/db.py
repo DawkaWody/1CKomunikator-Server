@@ -24,9 +24,9 @@ class DbManager:
             cache_size=0,
         )
 
-        self.template_add_user = template_add_user or sql_script_templates_env.get_template("add_user.sql")
-        self.template_get_password = template_get_password or sql_script_templates_env.get_template("get_password.sql")
-        self.template_clear = template_clear or sql_script_templates_env.get_template("clear.sql")
+        self.template_add_user = template_add_user or self.sql_script_templates_env.get_template("add_user.sql")
+        self.template_get_password = template_get_password or self.sql_script_templates_env.get_template("get_password.sql")
+        self.template_clear = template_clear or self.sql_script_templates_env.get_template("clear.sql")
         self.__db = None
 
     def get_db(self):
