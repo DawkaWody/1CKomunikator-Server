@@ -30,17 +30,23 @@ FILL_DATA_PASSWORDS = ["admin", "t", "password", "very_long_password_to_check_fo
 def db_handle():
     database_folder = root / "tmp" / f"test_database{uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
-    app.config["DATABASE"] = str(database_folder / "test_db.sqlite")
+    app.config["DATABASE"] = str()
     # creating the db
     handle = connect(app.config["DATABASE"], autocommit=True)
     yield handle
     handle.close()
     path = str(database_folder)
+    try:
+        (database_folder / "test_db.sqlite").unlink(missing_ok=True)
+    except PermissionError:
+        handle = connect(app.config["DATABASE"], autocommit=True)
+        handle.executescript("""DROP TABLE IF EXISTS users;""")
     rmtree(path, ignore_errors=True)
 
 
 def fill_db(db_handle: Connection):
     db_handle.executescript("""
+DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
