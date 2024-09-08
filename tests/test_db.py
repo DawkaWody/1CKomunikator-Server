@@ -1,13 +1,12 @@
 try:
-    __import__("pytest")
-except ImportError:
+    import pytest
+except (ImportError, ModuleNotFoundError):
     raise TypeError("Please install testing requirements (pyptest and requests)")
 import pathlib
 import shutil
 import sqlite3
 import uuid
 
-import pytest
 import sqlescapy
 
 import db
