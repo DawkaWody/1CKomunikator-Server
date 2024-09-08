@@ -1,12 +1,10 @@
 import waitress
 import flask
 
-from db import get_password, add_user, get_db, load_script_templates
+from db import get_password, add_user, get_db, sql_script_templates_env
 from utils import root
 
 app = flask.Flask(__name__)
-
-load_script_templates()
 
 @app.route("/")
 def hello_world() -> str:

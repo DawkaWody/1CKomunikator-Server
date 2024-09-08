@@ -14,13 +14,9 @@ sql_script_templates_env = Environment(
     cache_size=0,
 )
 
-st_add_user = st_get_user = st_clear = None
-
-def load_script_templates() -> None:
-    global st_add_user, st_get_password, st_clear
-    st_add_user     = sql_script_templates_env.get_template("add_user.sql"    ).render().strip()
-    st_get_password = sql_script_templates_env.get_template("get_password.sql").render().strip()
-    st_clear        = sql_script_templates_env.get_template("clear.sql"       ).render().strip()
+st_add_user: str = sql_script_templates_env.get_template("add_user.sql").render().strip()
+st_get_password: str = sql_script_templates_env.get_template("get_password.sql").render().strip()
+st_clear: str = sql_script_templates_env.get_template("clear.sql").render().strip()
 
 def get_db() -> Connection:
     """
