@@ -134,7 +134,7 @@ def test_add_user_full(username, password, monkeypatch, db_handle: sqlite3.Conne
     def mock_connect(*args, **kwargs):
         return db_handle
 
-    monkeypatch.setattr("db.connect", mock_connect)
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
     db_manager = db.DbManager(pathlib.Path())
     db_manager.init_db()
     fill_db(db_handle)
