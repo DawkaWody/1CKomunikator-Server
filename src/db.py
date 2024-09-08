@@ -45,15 +45,9 @@ class DbManager:
         """
         Zamyka uchwyt do bazy danych
         """
-        print("A") # self.__db is not None == True
-        t = self._db is not None
-        a = self._db
-        print(f"{a=} {type(a)=}", file=__import__("sys").stderr)
-        if t and (a==a):
-            print("B")
+        if self._db is not None:
             self._db.close()
             self._db = None
-        print("C")
 
     @property
     def db(self):
