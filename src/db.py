@@ -8,12 +8,19 @@ from sqlescapy import sqlescape
 from utils import root
 
 # g is per-request state
-sql_functions_env = Environment(
+sql_script_templates_env = Environment(
     loader=FileSystemLoader(root / "sql_functions"),
     autoescape=select_autoescape(),
     cache_size=0,
 )
 
+st_add_user = st_get_user = st_clear = None
+
+def load_script_templates() -> None:
+    global st_add_user, st_get_password, st_clear
+    st_add_user     = sql_script_templates_env.get_template("add_user.sql"    ).render().strip()
+    st_get_password = sql_script_templates_env.get_template("get_password.sql").render().strip()
+    st_clear        = sql_script_templates_env.get_template("clear.sql"       ).render().strip()
 
 def get_db() -> Connection:
     """
@@ -43,8 +50,7 @@ def init_db() -> None:
     """
     czyści bazę danych i ją tworzy
     """
-    script = sql_functions_env.get_template("clear.sql").render()
-    get_db().executescript(script)
+    get_db().executescript(st_clear)
 
 
 def add_user(username, password) -> None:
@@ -58,12 +64,7 @@ def add_user(username, password) -> None:
         raise ValueError("Invalid name null")
     if get_password(username):
         raise ValueError("Such user exists")
-    get_db().executescript(
-        sql_functions_env.get_template("add_user.sql").render(
-            username=sqlescape(username),
-            password=sqlescape(password),
-        ).strip()
-    )
+    get_db().executescript(st_add_user)
 
 
 def get_password(username) -> Optional[str]:
@@ -73,10 +74,7 @@ def get_password(username) -> Optional[str]:
     :return:
     """
 
-    row = get_db().execute(
-                sql_functions_env.get_template("get_password.sql").render(
-                    username=sqlescape(username)).strip()
-            ).fetchone()
+    row = get_db().execute(st_get_password).fetchone()
     return row["password"] if row else None
 
 
@@ -115,6 +113,9 @@ def main() -> None:
     """
     from sys import argv
     from main import app
+
+    load_script_templates()
+
     with app.app_context():
         if len(argv) < 2 or argv[1] == "help":
             print_help()
