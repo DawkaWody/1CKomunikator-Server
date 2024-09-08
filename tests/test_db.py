@@ -2,6 +2,7 @@ try:
     __import__("pytest")
 except ImportError:
     raise TypeError("Please install testing requirements (pyptest and requests)")
+import pathlib
 import shutil
 import sqlite3
 import uuid
@@ -22,8 +23,7 @@ def db_handle():
     handle = sqlite3.connect(app.config["DATABASE"])
     yield handle
     handle.close()
-    path = str(database_folder)
-    shutil.rmtree(path, ignore_errors=True)
+    shutil.rmtree(str(database_folder), ignore_errors=True)
 
 
 def fill_db(db_handle):
@@ -52,17 +52,21 @@ def test_init_db_full(db_handle, monkeypatch):
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
-    with app.app_context():
-        db.init_db()
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
     assert len(tables) == 1, "init_db() did not create the table"
     result = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not clear all"
 
 
-def test_init_db_empty(db_handle):
-    with app.app_context():
-        db.init_db()
+def test_init_db_empty(db_handle, monkeypatch):
+    def mock_connect(*args, **kwargs):
+        return db_handle
+
+    monkeypatch.setattr("sqlite3.connect", mock_connect)
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.init_db()
     tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
     assert len(tables) == 1, "init_db() did not create the table"
     result = db_handle.execute("SELECT * FROM users").fetchall()
@@ -77,23 +81,13 @@ def test_close_db_opened(monkeypatch):
             nonlocal closed
             closed = True
 
-    class MockG:
-        def pop(self, name, default):
-            return MockDb()
-
-    monkeypatch.setattr("db.g", MockG())
-    with app.app_context():
-        db.close_db()
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.__db = MockDb()
+    db_manager.close_db()
 
     assert closed, "db not closed"
 
 
 def test_close_db_closed(monkeypatch):
-    class MockG:
-        def pop(self, name, default):
-            return None
-
-    monkeypatch.setattr("db.g", MockG())
-
-    with app.app_context():
-        db.close_db()
+    db_manager = db.DbManager(pathlib.Path())
+    db_manager.close_db()
