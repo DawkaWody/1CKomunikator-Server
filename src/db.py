@@ -110,8 +110,6 @@ def main() -> None:
     from sys import argv
     from main import app
 
-    load_script_templates()
-
     with app.app_context():
         if len(argv) < 2 or argv[1] == "help":
             print_help()
