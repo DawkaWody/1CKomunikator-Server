@@ -1,7 +1,7 @@
 import waitress
 import flask
 
-from db import get_password, add_user, get_db, sql_script_templates_env
+from db import get_password, add_user, get_db
 from utils import root
 
 app = flask.Flask(__name__)
