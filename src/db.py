@@ -1,6 +1,6 @@
+import pathlib
 import sqlite3
 import typing
-import pathlib
 
 import jinja2
 import sqlescapy
@@ -25,7 +25,8 @@ class DbManager:
         )
 
         self.template_add_user = template_add_user or self.sql_script_templates_env.get_template("add_user.sql")
-        self.template_get_password = template_get_password or self.sql_script_templates_env.get_template("get_password.sql")
+        self.template_get_password = (template_get_password or
+                                      self.sql_script_templates_env.get_template("get_password.sql"))
         self.template_clear = template_clear or self.sql_script_templates_env.get_template("clear.sql")
         self._db = None
 
