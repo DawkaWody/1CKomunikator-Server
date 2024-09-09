@@ -46,7 +46,7 @@ act
 
 ```shell
 pip install pylint
-pylint .
+git ls-files '*.py' | xargs pylint
 ```
 
 ```shell
