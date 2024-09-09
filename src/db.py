@@ -2,23 +2,22 @@
 import pathlib
 import sqlite3
 import typing
-import collections.abc
 
 import jinja2
 
 from utils import get_root
 
 tt_sql_escapes: dict[int, str] = {
-    0: '\\0',
-    8: '\\b',
-    9: '\\t',
-    10: '\\n',
-    13: '\\r',
-    26: '\\z',
-    34: '',
-    37: '\\%',
-    39: '',
-    92: '\\\\'
+    0: "\\0",
+    8: "\\b",
+    9: "\\t",
+    10: "\\n",
+    13: "\\r",
+    26: "\\z",
+    34: "",
+    37: "\\%",
+    39: "",
+    92: "\\\\",
 }
 
 class DbManager:
@@ -54,8 +53,8 @@ class DbManager:
                                       self.sql_script_templates_env.get_template("get_password.sql")
         self.template_clear = template_clear or \
                               self.sql_script_templates_env.get_template("clear.sql")
-        # type : ignore
-        self._db: typing.Optional[sqlite3.Connection] = None
+        # type: ignore
+        self._db: sqlite3.Connection | None = None
 
     def get_db(self) -> None:
         """Aktualizuje uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych."""
@@ -84,7 +83,7 @@ class DbManager:
             self._db = sqlite3.connect(
                 self.db_path,
                 detect_types=sqlite3.PARSE_DECLTYPES,
-                autocommit=True
+                autocommit=True,
             )
             self._db.row_factory = sqlite3.Row
         return self._db
@@ -95,9 +94,7 @@ class DbManager:
 
     @db.setter
     def db(self, value: typing.Any) -> None:
-        """
-        Zamyka bazę danych + assertuje `value is None`
-        """
+        """Zamyka bazę danych + assertuje `value is None`."""
         self.close_db()
         assert value is None
 
@@ -106,7 +103,8 @@ class DbManager:
         self.db.executescript(self.template_clear.render().strip())
 
     def add_user(self, username: str, password: str) -> None:
-        """Dodaje użytkownika.
+        """
+        Dodaje użytkownika.
 
         :param username: Nazwa użytkownika
         :param password: Hasło użytkownika
@@ -120,7 +118,7 @@ class DbManager:
             raise ValueError(msg)
         self.db.executescript(self.template_add_user.render(
             username=username.translate(tt_sql_escapes),
-            password=password.translate(tt_sql_escapes)
+            password=password.translate(tt_sql_escapes),
         ).strip())
 
     def get_password(self, username: str) -> str | None:
@@ -130,17 +128,13 @@ class DbManager:
         :param username: Nazwa użytkownika
         :return:
         """
-
         row = self.db.execute(self.template_get_password.render(
-            username=username.translate(tt_sql_escapes)
+            username=username.translate(tt_sql_escapes),
         ).strip()).fetchone()
         return row["password"] if row is not None else None
 
     def print_table(self) -> None:
-        """
-        Wypisuje całą tabelę użytkowników w formacie csv
-        :return:
-        """
+        """Wypisuje całą tabelę użytkowników w formacie csv."""
         rows: list[sqlite3.Row] = self.db.execute("SELECT * FROM users;").fetchall()
         for key in rows[0]:
             print(key, end=", ")
