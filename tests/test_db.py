@@ -3,6 +3,7 @@ import typing
 
 from db import DbManager
 
+
 try:
     import pytest
 except (ImportError, ModuleNotFoundError):
