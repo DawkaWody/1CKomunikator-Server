@@ -28,6 +28,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest mypy types-waitress
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+   - name: Test with pytest
+      run: |
+        export PYTHONPATH="${PYTHONPATH}:./src:./tests"
+        pytest
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -37,8 +41,3 @@ jobs:
     - name: Check with mypy
       run: | 
         mypy . -v
-    - name: Test with pytest
-      if: always()
-      run: |
-        export PYTHONPATH="${PYTHONPATH}:./src:./tests"
-        pytest
