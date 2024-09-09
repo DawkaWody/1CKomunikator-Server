@@ -45,6 +45,11 @@ act
 ### Sprawdzanie składni
 
 ```shell
+pip install pylint
+pylint .
+```
+
+```shell
 pip install flake8
 flake8 .
 ```
