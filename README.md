@@ -10,9 +10,8 @@
 - [Znane Błędy](#znane-błędy)
 
 ## Ważne
-Przed pull-request sparawdź składnie oraz uruchom testy
-Prace nad HTML: \
-dev-html (w trakcie) \
+Przed pull-request sparawdź składnie oraz uruchom testy \
+Prace nad HTML: dev-html (w trakcie) \
 Prace nad Bazą Danych: dev-database (w trakcie) \
 Prace nad Serwerem: dev-server (w trakcie)
 
