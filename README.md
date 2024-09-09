@@ -141,3 +141,5 @@ zarządza bazą danych
 - [ ] API
 
 ## Znane Błędy
+
+- [x] Ktos usunal hotfixy
