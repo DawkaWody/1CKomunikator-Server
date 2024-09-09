@@ -1,11 +1,9 @@
+"""Contains stuff that's used in db and main to avoid cycle imports."""
 from pathlib import Path
 
 APP_NAMES = ["1ckomunikator", "1ckomunikator-server"]
 
 root = Path.cwd()
-
-print(root.name)
-
 if root.name.lower() in APP_NAMES:
     pass  # ok
 elif root.parent.name.lower() in APP_NAMES:
@@ -16,4 +14,5 @@ else:
             root = parent
             break
     else:
-        raise ValueError("cannot find project root")
+        msg = "cannot find project root"
+        raise ValueError(msg)
