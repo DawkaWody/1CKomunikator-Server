@@ -3,7 +3,7 @@
 - [Instalacja](#instalacja-)
 - [Funkcje](#funkcje-)
 - [Dokumentacja](#dokumentacja-)
-- [Postęp](#postęp-)
+- [Postęp](#postęp)
 - [Cele](#cele-)
 - [Do Zrobienia](#do-zrobienia-)
 - [Znane Błędy](#znane-błędy-)
