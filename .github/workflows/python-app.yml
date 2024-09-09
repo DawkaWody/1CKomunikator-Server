@@ -36,8 +36,9 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Check with mypy
       run: | 
-        mypy .
+        mypy . -v
     - name: Test with pytest
+      if: always()
       run: |
         export PYTHONPATH="${PYTHONPATH}:./src:./tests"
         pytest
