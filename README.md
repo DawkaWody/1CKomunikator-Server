@@ -1,6 +1,5 @@
 # 1CKomunikator 💬
-
-- [Ważne](#ważne)
+- [Ważne](#wa%C5%BCne)
 - [Instalacja](#instalacja)
 - [Funkcje](#funkcje)
 - [Dokumentacja](#dokumentacja)
