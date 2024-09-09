@@ -142,4 +142,4 @@ zarządza bazą danych
 
 ## Znane Błędy
 
-- [x] Ktos usunal hotfixy
+- [x] **Ktos usunal hotfixy**
