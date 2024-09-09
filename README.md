@@ -144,6 +144,7 @@ zarządza bazą danych
 - [ ] Baza Danych
 - [ ] Szyfrowanie
 - [ ] API
+- [ ] jajko
 
 ## Znane Błędy
 
