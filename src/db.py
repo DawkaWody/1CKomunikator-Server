@@ -1,12 +1,26 @@
+import sys
+
 import pathlib
 import sqlite3
 import typing
+import collections.abc
 
 import jinja2
-import sqlescapy
 
 from utils import root
 
+tt_sql_escapes: dict[int, str] = {
+    0: '\\0',
+    8: '\\b',
+    9: '\\t',
+    10: '\\n',
+    13: '\\r',
+    26: '\\z',
+    34: '',
+    37: '\\%',
+    39: '',
+    92: '\\\\'
+}
 
 class DbManager:
     def __init__(
@@ -24,13 +38,16 @@ class DbManager:
             cache_size=0,
         )
 
-        self.template_add_user = template_add_user or self.sql_script_templates_env.get_template("add_user.sql")
-        self.template_get_password = (template_get_password or
-                                      self.sql_script_templates_env.get_template("get_password.sql"))
-        self.template_clear = template_clear or self.sql_script_templates_env.get_template("clear.sql")
-        self._db = None
+        self.template_add_user = template_add_user or \
+                                 self.sql_script_templates_env.get_template("add_user.sql")
+        self.template_get_password = template_get_password or \
+                                      self.sql_script_templates_env.get_template("get_password.sql")
+        self.template_clear = template_clear or \
+                              self.sql_script_templates_env.get_template("clear.sql")
+        # type : ignore
+        self._db: typing.Optional[sqlite3.Connection] = None
 
-    def get_db(self):
+    def get_db(self) -> None:
         """
         aktualizuje uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych
         :return: Bazę danych
@@ -51,17 +68,32 @@ class DbManager:
             self._db = None
 
     @property
-    def db(self):
+    def db(self) -> sqlite3.Connection:
+        """
+        Atrybut bazy danych
+        """
         if self._db is None:
-            self.get_db()
+            # Mypy inaczej nie działa poprawnie
+            self._db = sqlite3.connect(
+                self.db_path,
+                detect_types=sqlite3.PARSE_DECLTYPES,
+                autocommit=True
+            )
+            self._db.row_factory = sqlite3.Row
         return self._db
 
     @db.deleter
-    def db(self):
+    def db(self) -> None:
+        """
+        Zamyka bazę danych
+        """
         self.close_db()
 
     @db.setter
-    def db(self, value):
+    def db(self, value: typing.Any) -> None:
+        """
+        Zamyka bazę danych + assertuje `value is None`
+        """
         self.close_db()
         assert value is None
 
@@ -71,7 +103,7 @@ class DbManager:
         """
         self.db.executescript(self.template_clear.render().strip())
 
-    def add_user(self, username, password) -> None:
+    def add_user(self, username: str, password: str) -> None:
         """
         dodaje użytkownika
         :param username: Nazwa użytkownika
@@ -83,11 +115,11 @@ class DbManager:
         if self.get_password(username) is not None:
             raise ValueError("Such user exists")
         self.db.executescript(self.template_add_user.render(
-            username=sqlescapy.sqlescape(username),
-            password=sqlescapy.sqlescape(password)
+            username=username.translate(tt_sql_escapes),
+            password=password.translate(tt_sql_escapes)
         ).strip())
 
-    def get_password(self, username) -> typing.Optional[str]:
+    def get_password(self, username: str) -> typing.Optional[str]:
         """
         zwraca hasło
         :param username: Nazwa użytkownika
@@ -95,7 +127,7 @@ class DbManager:
         """
 
         row = self.db.execute(self.template_get_password.render(
-            username=sqlescapy.sqlescape(username)
+            username=username.translate(tt_sql_escapes)
         ).strip()).fetchone()
         return row["password"] if row is not None else None
 
@@ -132,33 +164,32 @@ def main() -> None:
     główna funkcja
     :return:
     """
-    from sys import argv
 
     db = DbManager(root / "main_db.sqlite")
-    if len(argv) < 2 or argv[1] == "help":
+    if len(sys.argv) < 2 or sys.argv[1] == "help":
         print_help()
         return
 
-    if argv[1] == "clear":
+    if sys.argv[1] == "clear":
         print("Clearing database...")
         db.init_db()
         return
 
-    if argv[1] == "add":
+    if sys.argv[1] == "add":
         # program, "add", username, passwort
-        assert len(argv) == 4, "Usage: db.py add <user> <password>"
-        print(f"Adding user {argv[2]}...")
-        db.add_user(argv[2], argv[3])
+        assert len(sys.argv) == 4, "Usage: db.py add <user> <password>"
+        print(f"Adding user {sys.argv[2]}...")
+        db.add_user(sys.argv[2], sys.argv[3])
         return
 
-    if argv[1] == "get":
+    if sys.argv[1] == "get":
         # program, "get", username
-        assert len(argv) == 3, "Usage: db.py get <user>"
-        print(f"Getting password of user {argv[2]}...")
-        print(db.get_password(argv[2]))
+        assert len(sys.argv) == 3, "Usage: db.py get <user>"
+        print(f"Getting password of user {sys.argv[2]}...")
+        print(db.get_password(sys.argv[2]))
         return
 
-    if argv[1] == "print_table":
+    if sys.argv[1] == "print_table":
         print("Printing table")
         db.print_table()
         return
