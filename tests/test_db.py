@@ -54,7 +54,6 @@ tt_sql_escapes: dict[int, str] = {
 }
 
 
-# noinspection PyArgumentList
 @pytest.fixture
 def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
     database_folder: pathlib.Path = root / "tmp" / f"test_database{uuid.uuid1().hex}"
