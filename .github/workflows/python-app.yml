@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest mypy types-waitress
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-   - name: Test with pytest
+    - name: Test with pytest
       run: |
         export PYTHONPATH="${PYTHONPATH}:./src:./tests"
         pytest
