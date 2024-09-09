@@ -1,4 +1,5 @@
 import flask
+from flask import render_template
 import waitress
 
 from db import DbManager
@@ -9,7 +10,7 @@ app = flask.Flask(__name__)
 
 @app.route("/")
 def hello_world() -> str:
-    return "<p>Hello, World!</p><a href=/link>A linky link!</a>"
+    return render_template("index.html")
 
 
 @app.post("/login")
