@@ -45,7 +45,7 @@ act
 ### Sprawdzanie składni
 
 ```shell
-pip install flake8\
+pip install flake8
 flake8 .
 ```
 
