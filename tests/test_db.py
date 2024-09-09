@@ -1,5 +1,4 @@
-import typing
-
+# pylint: disable=W0621,R0903
 try:
     import pytest
 except (ImportError, ModuleNotFoundError) as err:
@@ -8,14 +7,16 @@ except (ImportError, ModuleNotFoundError) as err:
 import pathlib
 import shutil
 import sqlite3
+import typing
 import uuid
 
 import sqlescapy
-from sample_data import PASSWORDS, USERNAME_WRONG, USERNAMES_A, USERNAMES_B
 
 import db
 from main import app
-from utils import root
+from utils import get_root
+
+from .sample_data import PASSWORDS, USERNAME_WRONG, USERNAMES_A, USERNAMES_B
 
 if typing.TYPE_CHECKING:
     from _pytest.monkeypatch import MonkeyPatch
@@ -24,7 +25,7 @@ if typing.TYPE_CHECKING:
 # noinspection PyArgumentList
 @pytest.fixture
 def db_handle():
-    database_folder = root / "tmp" / f"test_database{uuid.uuid1().hex}"
+    database_folder = get_root() / "tmp" / f"test_database{uuid.uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
     app.config["DATABASE"] = str(database_folder / "test_sqlite")
     # creating the db
@@ -65,7 +66,7 @@ def get_db_data(db_handle: sqlite3.Connection):
     return [(row["username"], row["password"]) for row in rows]
 
 
-def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     fill_db(db_handle, USERNAMES_B)
 
     def mock_connect(*args, **kwargs):
@@ -80,7 +81,7 @@ def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
     assert len(result) == 0, "init_db() did not clear all"
 
 
-def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -93,7 +94,7 @@ def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
     assert len(result) == 0, "init_db() did not cleer all"
 
 
-def test_close_db_opened(monkeypatch: MonkeyPatch):
+def test_close_db_opened(monkeypatch: "MonkeyPatch"):
     closed = False
 
     class MockDb:
@@ -114,7 +115,7 @@ def test_close_db_closed():
 
 @pytest.mark.parametrize("username", USERNAMES_A)
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_add_user_empty(username: str, password: str, db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_add_user_empty(username: str, password: str, db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -130,7 +131,7 @@ def test_add_user_empty(username: str, password: str, db_handle: sqlite3.Connect
 
 @pytest.mark.parametrize("username", USERNAMES_A)
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_add_user_full(username: str, password: str, db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_add_user_full(username: str, password: str, db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -143,7 +144,7 @@ def test_add_user_full(username: str, password: str, db_handle: sqlite3.Connecti
 
 
 @pytest.mark.parametrize("username", USERNAMES_A)
-def test_add_user_invalid_exists(username: str, db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_add_user_invalid_exists(username: str, db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -156,7 +157,7 @@ def test_add_user_invalid_exists(username: str, db_handle: sqlite3.Connection, m
 
 
 @pytest.mark.parametrize("username", USERNAME_WRONG)
-def test_add_user_invalid(username: str, db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_add_user_invalid(username: str, db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -168,7 +169,7 @@ def test_add_user_invalid(username: str, db_handle: sqlite3.Connection, monkeypa
 
 
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_get_password_exists(password: str, db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_get_password_exists(password: str, db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs):
         return db_handle
 
@@ -181,7 +182,7 @@ def test_get_password_exists(password: str, db_handle: sqlite3.Connection, monke
 
 
 @pytest.mark.parametrize("username", USERNAMES_A)
-def test_get_password_invalid_full(username: str, db_handle: sqlite3.Connection, monkeypatch: MonkeyPatch):
+def test_get_password_invalid_full(username: str, db_handle: sqlite3.Connection, monkeypatch: "MonkeyPatch"):
     def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 

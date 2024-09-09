@@ -33,8 +33,9 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "TCH004",  # it's private: tests\test_db.py:22:37: TCH004 `_pytest.monkeypatch.MonkeyPatch` out of type-checking block
     "D415", # duplicate of D401 First line should end with a period, question mark, or exclamation point
+    "D203", # incopatible with no-blank-line-before-class, looks worse
+    "D212", # incopatible with D213, idk
 ]
 fixable = ["ALL"]
 unfixable = []
@@ -57,13 +58,12 @@ unfixable = []
     "T201",  # `print` found
     "PLR2004",  # Magic value used in comparison, consider replacing `x` with a constant variable
     "S101",  # Use of `assert` detected
-
 ]
 
 
 [tool.pylint]
-# ruff handles that
 disable = [
+    # ruff handles that
     "E0237", "E1142", "E0014", "E1300", "E0013", "E1310", "E1307", "E2502", "E6005", "E6004", "E0116", "E0108", "E0241",
     "E1303", "E0102", "E0100", "E0605", "E0604", "E0304", "E0308", "E2510", "E2513", "E2514", "E2512", "E2515", "E0309",
     "E0305", "E0303", "E1206", "E1205", "E0704", "E1304", "E1302", "E4703", "E0213", "E0107", "E0115", "E0117", "E0103",
@@ -82,4 +82,17 @@ disable = [
     "R1723", "R1724", "R1720", "R1705", "R6301", "R0203", "R0206", "R1704", "R1719", "R1703", "R1725", "R1260", "R0913",
     "R0916", "R0912", "R0914", "R1702", "R0904", "R0911", "R0915", "R1707", "R1721", "R1733", "R1736", "R1729", "R1735",
     "R1734", "R6201", "R0205", "R0022", "R1711",
+    # i don't like
+    "R0913",  # Too many arguments
 ]
+
+[tool.pylint.main]
+suggestion-mode = true
+
+[tool.pylint.format]
+indent-string = "    "
+max-line-length = 120
+
+[tool.pylint.miscellaneous]
+# List of note tags to take in consideration, separated by a comma.
+notes = ["FIXME", "XXX", "TODO"]

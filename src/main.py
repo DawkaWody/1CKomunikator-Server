@@ -1,10 +1,10 @@
 """Main module."""
 import flask
-from flask import render_template
 import waitress
+from flask import render_template
 
 from db import DbManager
-from utils import root
+from utils import get_root
 
 app = flask.Flask(__name__)
 
@@ -17,7 +17,8 @@ def hello_world() -> str:
 
 @app.post("/login")
 def login() -> dict:
-    """Loging in.
+    """
+    Loging in.
 
     format is:
     {"username":<username>, "password":<password>}
@@ -35,7 +36,8 @@ def login() -> dict:
 
 @app.post("/signup")
 def signup() -> dict:
-    """Signing up.
+    """
+    Signing up.
 
     format is:
     {"username":<username>, "password":<password>}
@@ -51,8 +53,8 @@ def signup() -> dict:
     return {"success": success, "reason": ""}
 
 
-app.config.db_path = root / "main_db.sqlite"
+app.config.db_path = get_root() / "main_db.sqlite"
 db = DbManager(app.config.db_path)
-app.root_path = str(root)
+app.root_path = str(get_root())
 if __name__ == "__main__":
     waitress.serve(app, host="localhost", port="8000")

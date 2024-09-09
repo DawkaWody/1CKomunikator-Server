@@ -5,7 +5,7 @@ import sqlite3
 import jinja2
 import sqlescapy
 
-from utils import root
+from utils import get_root
 
 
 class DbManager:
@@ -19,7 +19,8 @@ class DbManager:
         template_get_password: jinja2.Template | None = None,
         template_clear: jinja2.Template | None = None,
     ) -> None:
-        """Class for communicating db.
+        """
+        Class for communicating db.
 
         :param db_path: Path to db
         :param sql_script_templates_env: scripts env, defaults to sql_functions
@@ -29,7 +30,7 @@ class DbManager:
         """
         self.db_path = db_path
         self.sql_script_templates_env = sql_script_templates_env or jinja2.Environment(
-            loader=jinja2.FileSystemLoader(root / "sql_functions"),
+            loader=jinja2.FileSystemLoader(get_root() / "sql_functions"),
             autoescape=jinja2.select_autoescape(),
             cache_size=0,
         )
@@ -58,7 +59,8 @@ class DbManager:
 
     @property
     def db(self) -> sqlite3.Connection:
-        """Automatically refreshing database handle.
+        """
+        Automatically refreshing database handle.
 
         :return:
         """
@@ -81,7 +83,8 @@ class DbManager:
         self.db.executescript(self.template_clear.render().strip())
 
     def add_user(self, username: str, password: str) -> None:
-        """Dodaje użytkownika.
+        """
+        Dodaje użytkownika.
 
         :param username: Nazwa użytkownika
         :param password: Hasło użytkownika
@@ -100,7 +103,8 @@ class DbManager:
         )
 
     def get_password(self, username: str) -> str | None:
-        """Zwraca hasło.
+        """
+        Zwraca hasło.
 
         :param username: Nazwa użytkownika
         :return:
@@ -111,7 +115,8 @@ class DbManager:
         return row["password"] if row is not None else None
 
     def print_table(self) -> None:
-        """Wypisuje całą tabelę użytkowników w formacie csv.
+        """
+        Wypisuje całą tabelę użytkowników w formacie csv.
 
         :return:
         """
@@ -126,7 +131,8 @@ class DbManager:
 
 
 def print_help() -> None:
-    """Wypisuje sposób użycia programu.
+    """
+    Wypisuje sposób użycia programu.
 
     :return:
     """
@@ -140,9 +146,10 @@ db.py get <user>            - gets password about
 
 def main() -> None:
     """Run the our cli."""
+    # pylint: disable=locally-disabled, import-outside-toplevel
     from sys import argv
 
-    db = DbManager(root / "main_db.sqlite")
+    db = DbManager(get_root() / "main_db.sqlite")
     if len(argv) < 2 or argv[1] == "help":
         print_help()
         return
