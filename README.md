@@ -49,6 +49,11 @@ git ls-files '*.py' | xargs pylint
 ```
 
 ```shell
+pip install pylint
+git ls-files '*.py' | xargs pylint
+```
+
+```shell
 pip install flake8
 flake8 .
 ```

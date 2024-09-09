@@ -1,4 +1,6 @@
 """Main module."""
+import pathlib
+
 import flask
 import waitress
 from flask import render_template
@@ -16,7 +18,7 @@ def hello_world() -> str:
 
 
 @app.post("/login")
-def login() -> dict:
+def login() -> dict[str, bool | str]:
     """
     Loging in.
 
@@ -35,7 +37,7 @@ def login() -> dict:
 
 
 @app.post("/signup")
-def signup() -> dict:
+def signup() -> dict[str, bool | str]:
     """
     Signing up.
 
@@ -53,8 +55,8 @@ def signup() -> dict:
     return {"success": success, "reason": ""}
 
 
-app.config.db_path = get_root() / "main_db.sqlite"
-db = DbManager(app.config.db_path)
+db_path: pathlib.Path = get_root() / "main_db.sqlite"
+db: DbManager = DbManager(db_path)
 app.root_path = str(get_root())
 if __name__ == "__main__":
     waitress.serve(app, host="localhost", port="8000")
