@@ -71,7 +71,7 @@ zarządza bazą danych
 
 ## Postęp
 
-### **Postęp: $$20\frac{5}{60}$$%**
+### **Postęp: $$20\frac{1}{12}$$%**
 
 <details>
 <summary> Postępy </summary>
@@ -95,8 +95,8 @@ zarządza bazą danych
 ### Działające API - Weryfikacja danych
 
 - [ ] Całość gotowa     (100%)
-- [x] Większość gotowa  (~75%)
-- [ ] Połowa gotowa     (~50%)
+- [ ] Większość gotowa  (~75%)
+- [x] Połowa gotowa     (~50%)
 - [ ] Mniejszość gotowa (~25%)
 - [ ] Nic nie jest gotowe (0%)
 
@@ -121,8 +121,8 @@ zarządza bazą danych
 - [ ] Całość gotowa     (100%)
 - [ ] Większość gotowa  (~75%)
 - [ ] Połowa gotowa     (~50%)
-- [ ] Mniejszość gotowa (~25%)
-- [x] Nic nie jest gotowe (0%)
+- [x] Mniejszość gotowa (~25%)
+- [ ] Nic nie jest gotowe (0%)
 
 </details>
 
