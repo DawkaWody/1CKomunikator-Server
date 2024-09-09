@@ -128,7 +128,7 @@ zarządza bazą danych
 
 ## Cele
 
-- API po stronie serwera, obłsugujące logowanie i tworzenie kont, wysyłanie, pobieranie, zarządzanie, odpowiadanie -
+- API po stronie serwera, obłsugujące logowanie i tworzenie kont, czy ktos to wgl czyta, wysyłanie, pobieranie, zarządzanie, odpowiadanie -
   wiadomości
 - Szyfrowanie wiadomości, zabezpieczemie przed możliością odczytu po stronie serwera
 - Strona aplikacji obsługująca całe API
