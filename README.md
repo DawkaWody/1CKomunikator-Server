@@ -1,12 +1,12 @@
 # 1CKomunikator 💬
-- [Ważne](#wa%C5%BCne)
-- [Instalacja](#instalacja)
-- [Funkcje](#funkcje)
-- [Dokumentacja](#dokumentacja)
-- [Postęp](#postęp)
-- [Cele](#cele)
-- [Do Zrobienia](#do-zrobienia)
-- [Znane Błędy](#znane-błędy)
+- [Ważne](#ważne-)
+- [Instalacja](#instalacja-)
+- [Funkcje](#funkcje-)
+- [Dokumentacja](#dokumentacja-)
+- [Postęp](#postęp-)
+- [Cele](#cele-)
+- [Do Zrobienia](#do-zrobienia-)
+- [Znane Błędy](#znane-błędy-)
 
 ## Ważne ❗
 Przed pull-request sparawdź składnie oraz uruchom testy \
