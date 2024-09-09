@@ -209,5 +209,9 @@ cython_debug/
 .idea/
 
 .vscode
-# tmp folder for test database
+
+# Tempolary folder for test database
 /tmp/
+
+# Ruff cache
+.ruff_cache/
