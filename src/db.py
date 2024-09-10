@@ -1,7 +1,6 @@
 """File for communicating db."""
 import pathlib
 import sqlite3
-import typing
 
 import jinja2
 
