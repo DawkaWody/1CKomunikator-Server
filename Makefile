@@ -10,7 +10,6 @@ install_dev :
 	pip install mypy types-waitress pylint ruff | findstr /V /C:"Requirement already satisfied"
 
 check: install_dependencies
-
 	ruff check . --fix
 	git ls-files '*.py' | xargs pylint
 	mypy --install-types
