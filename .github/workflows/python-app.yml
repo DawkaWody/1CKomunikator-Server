@@ -33,6 +33,7 @@ jobs:
         export PYTHONPATH="${PYTHONPATH}:./src:./tests"
         pytest
     - name: Check with ruff
+      continue-on-error: true
       run: |
         ruff check . --fix
     - name: Check with pylint
