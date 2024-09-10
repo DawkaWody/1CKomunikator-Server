@@ -18,9 +18,6 @@ from utils import get_root
 
 from .sample_data import PASSWORDS, USERNAME_WRONG, USERNAMES_A, USERNAMES_B
 
-def mock_connect(*args, **kwargs) -> sqlite3.Connection:
-        return db_handle
-
 @pytest.fixture
 def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
     database_folder: pathlib.Path = get_root() / "tmp" / f"test_database{uuid.uuid1().hex}"
@@ -38,6 +35,8 @@ def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
         handle.executescript("""DROP TABLE IF EXISTS users;""")
     shutil.rmtree(path, ignore_errors=True)
 
+def mock_connect(*args, **kwargs) -> sqlite3.Connection:
+        return db_handle
 
 def fill_db(db_handle: sqlite3.Connection, usernames: typing.Iterable[str],
             passwords: typing.Iterable[str] | None = None) -> None:
