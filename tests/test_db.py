@@ -67,7 +67,7 @@ def get_db_data(db_handle: sqlite3.Connection) -> list[tuple[str, str]]:
 def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
     fill_db(db_handle, USERNAMES_B)
 
-    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
+    def mock_connect(*args: typing.Unpack[typing.Any], **kwargs: typing.Unpack[typing.Any]) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
