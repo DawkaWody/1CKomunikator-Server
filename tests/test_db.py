@@ -37,8 +37,8 @@ def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
     shutil.rmtree(path, ignore_errors=True)
 
 
-def get_mock_connect(db_handle: sqlite3.Connection) -> typing.Callable[[], sqlite3.Connection]:
-    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
+def get_mock_connect(db_handle: sqlite3.Connection) -> collections.abc.Callable[[], sqlite3.Connection]:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection: # type : ignore
         return db_handle
 
     return mock_connect
