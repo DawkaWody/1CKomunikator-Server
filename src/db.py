@@ -1,40 +1,61 @@
+"""File for communicating db."""
 import pathlib
 import sqlite3
-import typing
 
 import jinja2
-import sqlescapy
 
-from utils import root
+from utils import get_root
 
+tt_sql_escapes: dict[int, str] = {
+    0: "\\0",
+    8: "\\b",
+    9: "\\t",
+    10: "\\n",
+    13: "\\r",
+    26: "\\z",
+    34: "",
+    37: "\\%",
+    39: "",
+    92: "\\\\",
+}
 
 class DbManager:
+    """Class for communicating db."""
+
     def __init__(
-            self,
-            db_path: pathlib.Path,
-            sql_script_templates_env: typing.Optional[jinja2.Environment] = None,
-            template_add_user: typing.Optional[jinja2.Template] = None,
-            template_get_password: typing.Optional[jinja2.Template] = None,
-            template_clear: typing.Optional[jinja2.Template] = None
-    ):
+        self,
+        db_path: pathlib.Path,
+        sql_script_templates_env: jinja2.Environment | None = None,
+        template_add_user: jinja2.Template | None = None,
+        template_get_password: jinja2.Template | None = None,
+        template_clear: jinja2.Template | None = None,
+    ) -> None:
+        """
+        Class for communicating db.
+
+        :param db_path: Path to db
+        :param sql_script_templates_env: scripts env, defaults to sql_functions
+        :param template_add_user: template for adding user, defaults to add_user.sql
+        :param template_get_password: template for getting password, defaults to get_password.sql
+        :param template_clear: template for clearing the database, defaults to clear.sql
+        """
         self.db_path = db_path
         self.sql_script_templates_env = sql_script_templates_env or jinja2.Environment(
-            loader=jinja2.FileSystemLoader(root / "sql_functions"),
+            loader=jinja2.FileSystemLoader(get_root() / "sql_functions"),
             autoescape=jinja2.select_autoescape(),
             cache_size=0,
         )
 
-        self.template_add_user = template_add_user or self.sql_script_templates_env.get_template("add_user.sql")
-        self.template_get_password = (template_get_password or
-                                      self.sql_script_templates_env.get_template("get_password.sql"))
-        self.template_clear = template_clear or self.sql_script_templates_env.get_template("clear.sql")
-        self._db = None
+        self.template_add_user = template_add_user or \
+                                 self.sql_script_templates_env.get_template("add_user.sql")
+        self.template_get_password = template_get_password or \
+                                      self.sql_script_templates_env.get_template("get_password.sql")
+        self.template_clear = template_clear or \
+                              self.sql_script_templates_env.get_template("clear.sql")
+        self._db: sqlite3.Connection | None = None
 
-    def get_db(self):
-        """
-        aktualizuje uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych
-        :return: Bazę danych
-        """
+    def get_db(self) -> None:
+        """Aktualizuje uchwyt do bazy danych dzięki któremu można wykonać zmiany w bazie danych."""
         self._db = sqlite3.connect(
             self.db_path,
             detect_types=sqlite3.PARSE_DECLTYPES,
@@ -43,80 +64,89 @@ class DbManager:
         self._db.row_factory = sqlite3.Row
 
     def close_db(self) -> None:
-        """
-        Zamyka uchwyt do bazy danych
-        """
+        """Zamyka uchwyt do bazy danych."""
         if self._db is not None:
             self._db.close()
             self._db = None
 
     @property
-    def db(self):
+    def db(self) -> sqlite3.Connection:
+        """
+        Automatically refreshing database handle.
+
+        :return:
+        """
         if self._db is None:
-            self.get_db()
+            # Mypy inaczej nie działa poprawnie
+            self._db = sqlite3.connect(
+                self.db_path,
+                detect_types=sqlite3.PARSE_DECLTYPES,
+                autocommit=True,
+            )
+            self._db.row_factory = sqlite3.Row
         return self._db
 
     @db.deleter
-    def db(self):
+    def db(self) -> None:
         self.close_db()
 
     @db.setter
-    def db(self, value):
+    def db(self, value: None) -> None:
+        """Zamyka bazę danych + assertuje `value is None`."""
         self.close_db()
         assert value is None
 
     def init_db(self) -> None:
-        """
-        czyści bazę danych i ją tworzy
-        """
+        """czyści bazę danych i ją tworzy."""
         self.db.executescript(self.template_clear.render().strip())
 
-    def add_user(self, username, password) -> None:
+    def add_user(self, username: str, password: str) -> None:
         """
-        dodaje użytkownika
+        Dodaje użytkownika.
+
         :param username: Nazwa użytkownika
         :param password: Hasło użytkownika
         :return:
         """
         if username is None or len(username) == 0:
-            raise ValueError("Invalid name null")
+            msg = "Invalid name null"
+            raise ValueError(msg)
         if self.get_password(username) is not None:
-            raise ValueError("Such user exists")
+            msg = "Such user exists"
+            raise ValueError(msg)
         self.db.executescript(self.template_add_user.render(
-            username=sqlescapy.sqlescape(username),
-            password=sqlescapy.sqlescape(password)
+            username=username.translate(tt_sql_escapes),
+            password=password.translate(tt_sql_escapes),
         ).strip())
 
-    def get_password(self, username) -> typing.Optional[str]:
+    def get_password(self, username: str) -> str | None:
         """
-        zwraca hasło
+        Zwraca hasło.
+
         :param username: Nazwa użytkownika
         :return:
         """
-
         row = self.db.execute(self.template_get_password.render(
-            username=sqlescapy.sqlescape(username)
+            username=username.translate(tt_sql_escapes),
         ).strip()).fetchone()
         return row["password"] if row is not None else None
 
     def print_table(self) -> None:
-        """
-        Wypisuje całą tabelę użytkowników w formacie csv
-        :return:
-        """
+        """Wypisuje całą tabelę użytkowników w formacie csv."""
         rows: list[sqlite3.Row] = self.db.execute("SELECT * FROM users;").fetchall()
-        for key in rows[0].keys():
+        for key in rows[0]:
             print(key, end=", ")
         print()
         for row in rows:
-            for key in row.keys():
+            for key in row:
                 print(row[key], end=", ")
             print()
 
 
 def print_help() -> None:
     """
-    Wypisuje sposób użycia programu
+    Wypisuje sposób użycia programu.
+
     :return:
     """
     print("""Usage:
@@ -128,13 +158,12 @@ db.py get <user>            - gets password about
 
 
 def main() -> None:
-    """
-    główna funkcja
-    :return:
-    """
+    """Run the our cli."""
+    # pylint: disable=locally-disabled, import-outside-toplevel
     from sys import argv
+    # nie importujemy sys bo to dużo i jest lokalnie
 
-    db = DbManager(root / "main_db.sqlite")
+    db = DbManager(get_root() / "main_db.sqlite")
     if len(argv) < 2 or argv[1] == "help":
         print_help()
         return
@@ -166,5 +195,5 @@ def main() -> None:
     print_help()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

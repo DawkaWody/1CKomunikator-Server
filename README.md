@@ -1,29 +1,28 @@
-# 1CKomunikator
-
-- [Ważne](#ważne)
-- [Instalacja](#instalacja)
-- [Funkcje](#funkcje)
-- [Dokumentacja](#dokumentacja)
+# 1CKomunikator 💬
+- [Ważne](#ważne-)
+- [Instalacja](#instalacja-)
+- [Funkcje](#funkcje-)
+- [Dokumentacja](#dokumentacja-)
 - [Postęp](#postęp)
-- [Cele](#cele)
-- [Do Zrobienia](#do-zrobienia)
-- [Znane Błędy](#znane-błędy)
+- [Cele](#cele-)
+- [Do Zrobienia](#do-zrobienia-)
+- [Znane Błędy](#znane-błędy-)
 
-## Ważne
-Przed pull-request sparawdź składnie oraz uruchom testy
+## Ważne ❗
+Przed pull-request sparawdź składnie oraz uruchom testy \
 Prace nad HTML: dev-html (w trakcie) \
 Prace nad Bazą Danych: dev-database (w trakcie) \
 Prace nad Serwerem: dev-server (w trakcie)
 
 Po skończeniu pracy pull-request do dev.
 
-## Instalacja
+## Instalacja 💽
 
 ```shell
 pip install -r requirements.txt
 ```
 
-## Testowanie
+## Testowanie 📋
 
 ### testowanie lokalnie
 
@@ -42,11 +41,17 @@ uruchom docker [desktop] oraz wywołaj \
 act
 ```
 
-### Sprawdzanie składni
+### Sprawdzanie składni 📠
 
 ```shell
-pip install flake8
-flake8 .
+pip install pylint
+git ls-files '*.py' | xargs pylint
+```
+
+
+```shell
+pip install ruff
+ruff . --fix
 ```
 
 ```shell
@@ -55,36 +60,28 @@ mypy --install-types
 mypy .
 ```
 
-## Dokumentacja
+## Dokumentacja 🗂️
 
 jak coś się zrobi to dać dokumentację
 
-### db.py
+### db.py 📑
 
 zarządza bazą danych
 
-`db.py clear - clears the database`
+db.py clear                 - clears the database
+db.py add <user> <password> - adds a user
+db.py print_table           - prints all users
+db.py get <user>            - gets password about
 
-`db.py add <user> <password> - adds a user`
-
-`db.py print_table - prints all users`
 
 ## Postęp
 
 ### **Postęp: $$20\frac{1}{12}$$%**
 
 <details>
-<summary> Postępy </summary>
+<summary> Postępy 🏆 </summary>
 
-### Podstawa serwera
-
-- [ ] Całość gotowa     (100%)
-- [ ] Większość gotowa  (~75%)
-- [ ] Połowa gotowa     (~50%)
-- [x] Mniejszość gotowa (~25%)
-- [ ] Nic nie jest gotowe (0%)
-
-### Obsługa bazy danych
+### Podstawa serwera 🌐
 
 - [ ] Całość gotowa     (100%)
 - [ ] Większość gotowa  (~75%)
@@ -92,7 +89,15 @@ zarządza bazą danych
 - [x] Mniejszość gotowa (~25%)
 - [ ] Nic nie jest gotowe (0%)
 
-### Działające API - Weryfikacja danych
+### Obsługa bazy danych 📠
+
+- [ ] Całość gotowa     (100%)
+- [ ] Większość gotowa  (~75%)
+- [ ] Połowa gotowa     (~50%)
+- [x] Mniejszość gotowa (~25%)
+- [ ] Nic nie jest gotowe (0%)
+
+### Działające API - Weryfikacja danych 🗂️
 
 - [ ] Całość gotowa     (100%)
 - [ ] Większość gotowa  (~75%)
@@ -100,7 +105,7 @@ zarządza bazą danych
 - [ ] Mniejszość gotowa (~25%)
 - [ ] Nic nie jest gotowe (0%)
 
-### Działające API - Obsługa wiadomości
+### Działające API - Obsługa wiadomości 💬
 
 - [ ] Całość gotowa     (100%)
 - [ ] Większość gotowa  (~75%)
@@ -108,7 +113,7 @@ zarządza bazą danych
 - [ ] Mniejszość gotowa (~25%)
 - [x] Nic nie jest gotowe (0%)
 
-### Szyfrowanie
+### Szyfrowanie 📟
 
 - [ ] Całość gotowa     (100%)
 - [ ] Większość gotowa  (~75%)
@@ -116,7 +121,7 @@ zarządza bazą danych
 - [ ] Mniejszość gotowa (~25%)
 - [x] Nic nie jest gotowe (0%)
 
-### Inne g$%&a
+### Inne g$%&a 🥚
 
 - [ ] Całość gotowa     (100%)
 - [ ] Większość gotowa  (~75%)
@@ -126,20 +131,20 @@ zarządza bazą danych
 
 </details>
 
-## Cele
+## Cele 🏅
 
-- API po stronie serwera, obłsugujące logowanie i tworzenie kont, wysyłanie, pobieranie, zarządzanie, odpowiadanie -
+- API po stronie serwera, obłsugujące logowanie i tworzenie kont, czy ktos to wgl czyta, wysyłanie, pobieranie, zarządzanie, odpowiadanie -
   wiadomości
 - Szyfrowanie wiadomości, zabezpieczemie przed możliością odczytu po stronie serwera
 - Strona aplikacji obsługująca całe API
 
-## Do Zrobienia
+## Do Zrobienia 🧾
 
-- [ ] Strona (Serwer)
-- [ ] Baza Danych
-- [ ] Szyfrowanie
-- [ ] API
+- [ ] Strona (Serwer) 🌐
+- [ ] Baza Danych 🗂️
+- [ ] Szyfrowanie 🔐
+- [ ] API 📟
 
-## Znane Błędy
+## Znane Błędy ❗
 
 - [x] **Ktos usunal hotfixy**

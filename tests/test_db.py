@@ -1,31 +1,34 @@
+# pylint: disable=W0621
 try:
     import pytest
-except (ImportError, ModuleNotFoundError):
-    raise TypeError("Please install testing requirements (pyptest and requests)")
+except (ImportError, ModuleNotFoundError) as err:
+    msg = "Please install testing requirements (pyptest and requests)"
+    raise TypeError(msg) from err
+import collections
 import pathlib
 import shutil
 import sqlite3
+import typing
 import uuid
 
-import sqlescapy
-
 import db
+from db import DbManager
 from main import app
-from sample_data import USERNAMES_A, USERNAMES_B, USERNAME_WRONG, PASSWORDS
-from utils import root
+from utils import get_root
+
+from .sample_data import PASSWORDS, USERNAME_WRONG, USERNAMES_A, USERNAMES_B
 
 
-# noinspection PyArgumentList
 @pytest.fixture
-def db_handle():
-    database_folder = root / "tmp" / f"test_database{uuid.uuid1().hex}"
+def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
+    database_folder: pathlib.Path = get_root() / "tmp" / f"test_database{uuid.uuid1().hex}"
     database_folder.mkdir(parents=True, exist_ok=True)
     app.config["DATABASE"] = str(database_folder / "test_sqlite")
     # creating the db
-    handle = sqlite3.connect(app.config["DATABASE"], autocommit=True)
+    handle: sqlite3.Connection = sqlite3.connect(app.config["DATABASE"], autocommit=True)
     yield handle
     handle.close()
-    path = str(database_folder)
+    path: str = str(database_folder)
     try:
         (database_folder / "test_db.sqlite").unlink(missing_ok=True)
     except PermissionError:
@@ -34,7 +37,15 @@ def db_handle():
     shutil.rmtree(path, ignore_errors=True)
 
 
-def fill_db(db_handle: sqlite3.Connection, usernames, passwords=None):
+def get_mock_connect(db_handle: sqlite3.Connection) -> collections.abc.Callable[[], sqlite3.Connection]:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection: # type : ignore
+        return db_handle
+
+    return mock_connect
+
+
+def fill_db(db_handle: sqlite3.Connection, usernames: typing.Iterable[str],
+            passwords: typing.Iterable[str] | None = None) -> None:
     if passwords is None:
         passwords = PASSWORDS
     db_handle.executescript("""
@@ -48,125 +59,110 @@ CREATE TABLE users (
     db_handle.executemany("""
 INSERT INTO users (username, password)
 VALUES (?, ?);
-""", list(zip(usernames, passwords)))
+""",
+                          list(zip(usernames, passwords, strict=False)),
+                          )
 
 
-def get_db_data(db_handle: sqlite3.Connection):
-    rows = db_handle.execute("SELECT * FROM users").fetchall()
-    result = []
-    for row in rows:
-        result.append((row["username"], row["password"]))
+def get_db_data(db_handle: sqlite3.Connection) -> list[tuple[str, str]]:
+    rows: list[typing.Mapping[str, str]] = db_handle.execute("SELECT * FROM users").fetchall()
+    result: list[tuple[str, str]] = [(row["username"], row["password"]) for row in rows]
     return result
 
 
-def test_init_db_full(db_handle, monkeypatch):
+def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
     fill_db(db_handle, USERNAMES_B)
 
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
-    db_manager = db.DbManager(pathlib.Path())
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
+    db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.init_db()
-    tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
+    tables: list[typing.Mapping[str, str]] = db_handle.execute(
+        """SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
     assert len(tables) == 1, "init_db() did not create the table"
-    result = db_handle.execute("SELECT * FROM users").fetchall()
+    result: list[typing.Mapping[str, str]] = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not clear all"
 
 
-def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
+def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
     db_manager = db.DbManager(pathlib.Path())
     db_manager.init_db()
-    tables = db_handle.execute("""SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
+    tables: list[typing.Mapping[str, str]] = db_handle.execute(
+        """SELECT * FROM sqlite_schema WHERE type="table" AND name="users" """).fetchall()
     assert len(tables) == 1, "init_db() did not create the table"
-    result = db_handle.execute("SELECT * FROM users").fetchall()
+    result: list[typing.Mapping[str, str]] = db_handle.execute("SELECT * FROM users").fetchall()
     assert len(result) == 0, "init_db() did not cleer all"
 
 
-def test_close_db_opened(monkeypatch):
-    closed = False
+def test_close_db_opened(monkeypatch: pytest.MonkeyPatch) -> None:
+    closed: bool = False
 
+    # pylint: disable=R0903
     class MockDb:
-        def close(self):
+        # noinspection PyMethodMayBeStatic
+        def close(self) -> None:
             nonlocal closed
             closed = True
 
-    db_manager = db.DbManager(pathlib.Path())
-    db_manager._db = MockDb()
+    db_manager: DbManager = db.DbManager(pathlib.Path())
+    db_manager._db = MockDb()  # type: ignore
     db_manager.close_db()
     assert closed, "db not closed"
 
 
-def test_close_db_closed():
-    db_manager = db.DbManager(pathlib.Path())
+def test_close_db_closed() -> None:
+    db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.close_db()
 
 
-@pytest.mark.parametrize("username", USERNAMES_A)
+@pytest.mark.parametrize("username", USERNAMES)
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_add_user_empty(username, password, monkeypatch, db_handle: sqlite3.Connection):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
+def test_add_user_empty(username: str, password: str, monkeypatch: pytest.MonkeyPatch,
+                        db_handle: sqlite3.Connection) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
 
     db_manager = db.DbManager(pathlib.Path())
     db_manager.init_db()
     db_manager.add_user(username, password)
     assert get_db_data(db_handle) == [
-        (sqlescapy.sqlescape(username), sqlescapy.sqlescape(password))], "add_user did not add user"
+        (username.translate(db.tt_sql_escapes), password.translate(db.tt_sql_escapes))], "add_user did not add user"
 
 
 @pytest.mark.parametrize("username", USERNAMES_A)
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_add_user_full(username, password, monkeypatch, db_handle: sqlite3.Connection):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
-    db_manager = db.DbManager(pathlib.Path())
+def test_add_user_full(username: str, password: str, monkeypatch: pytest.MonkeyPatch,
+                       db_handle: sqlite3.Connection) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
+    db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.init_db()
-    fill_db(db_handle, USERNAMES_B)
+    fill_db(db_handle)
     db_manager.add_user(username, password)
-    assert (sqlescapy.sqlescape(username), sqlescapy.sqlescape(password)) in get_db_data(db_handle)
+    assert (username.translate(db.tt_sql_escapes), password.translate(db.tt_sql_escapes)) in get_db_data(db_handle)
 
 
 @pytest.mark.parametrize("username", USERNAMES_A)
-def test_add_user_invalid_exists(username, db_handle, monkeypatch):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
+def test_add_user_invalid_exists(username: str, db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
 
     fill_db(db_handle, USERNAMES_A)
-    db_manager = db.DbManager(pathlib.Path())
-    with pytest.raises(ValueError):
+    db_manager: DbManager = db.DbManager(pathlib.Path())
+    with pytest.raises(ValueError, match="Such user exists"):
         db_manager.add_user(username, "test")
 
 
 @pytest.mark.parametrize("username", USERNAME_WRONG)
-def test_add_user_invalid(username, db_handle, monkeypatch):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
-    db_manager = db.DbManager(pathlib.Path())
+def test_add_user_invalid(username: str, db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
+    db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.init_db()
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Invalid name .*"):
         db_manager.add_user("", "test")
 
 
 @pytest.mark.parametrize("password", PASSWORDS)
-def test_get_password_exists(password, db_handle, monkeypatch):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
-    db_manager = db.DbManager(pathlib.Path())
+def test_get_password_exists(password: str, db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
+    db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.init_db()
     fill_db(db_handle, USERNAMES_A)
     fill_db(db_handle, ["test"], [password])
@@ -174,12 +170,10 @@ def test_get_password_exists(password, db_handle, monkeypatch):
 
 
 @pytest.mark.parametrize("username", USERNAMES_A)
-def test_get_password_invalid_full(username, db_handle, monkeypatch):
-    def mock_connect(*args, **kwargs):
-        return db_handle
-
-    monkeypatch.setattr("sqlite3.connect", mock_connect)
-    db_manager = db.DbManager(pathlib.Path())
+def test_get_password_invalid_full(username: str, db_handle: sqlite3.Connection,
+                                   monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
+    db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.init_db()
     fill_db(db_handle, USERNAMES_B)
     assert db_manager.get_password(username) is None, "get_password got password when there is none"
