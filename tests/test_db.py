@@ -8,7 +8,6 @@ import collections
 import pathlib
 import shutil
 import sqlite3
-import typing
 import uuid
 
 import db
