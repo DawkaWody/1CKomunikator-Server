@@ -36,7 +36,7 @@ def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
     shutil.rmtree(path, ignore_errors=True)
 
 def mock_connect(*args, **kwargs) -> sqlite3.Connection:
-        return db_handle
+        return db_handle()
 
 def fill_db(db_handle: sqlite3.Connection, usernames: typing.Iterable[str],
             passwords: typing.Iterable[str] | None = None) -> None:
