@@ -9,6 +9,7 @@ from db import DbManager
 from utils import get_root
 
 app = flask.Flask(__name__)
+db_path: pathlib.Path = get_root() / "main_db.sqlite"
 
 
 @app.route("/")
@@ -28,6 +29,7 @@ def login() -> dict[str, bool | str]:
     """
     username = flask.request.form["username"]
     user_password = flask.request.form["password"]
+    db: DbManager = DbManager(db_path)
     password = db.get_password(username)
 
     if not password or user_password != password:
@@ -47,6 +49,7 @@ def signup() -> dict[str, bool | str]:
     """
     username = flask.request.form["username"]
     password = flask.request.form["password"]
+    db: DbManager = DbManager(db_path)
     users = db.get_password(username)
     if users is not None:
         return {"success": False, "reason": "User with given username already exists"}
@@ -55,8 +58,6 @@ def signup() -> dict[str, bool | str]:
     return {"success": success, "reason": ""}
 
 
-db_path: pathlib.Path = get_root() / "main_db.sqlite"
-db: DbManager = DbManager(db_path)
 app.root_path = str(get_root())
 if __name__ == "__main__":
     waitress.serve(app, host="localhost", port="8000")
