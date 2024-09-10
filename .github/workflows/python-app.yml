@@ -35,7 +35,7 @@ jobs:
     - name: Check with ruff
       continue-on-error: true
       run: |
-        ruff check . --fix
+        ruff check .
     - name: Check with pylint
       run: |
        git ls-files '*.py' | xargs pylint
