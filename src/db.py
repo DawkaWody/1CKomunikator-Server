@@ -93,7 +93,7 @@ class DbManager:
         self.close_db()
 
     @db.setter
-    def db(self, value: typing.Any) -> None:
+    def db(self, value: None) -> None:
         """Zamyka bazę danych + assertuje `value is None`."""
         self.close_db()
         assert value is None
