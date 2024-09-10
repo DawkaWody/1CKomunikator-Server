@@ -72,11 +72,11 @@ jak coś się zrobi to dać dokumentację
 
 zarządza bazą danych
 
-`db.py clear - clears the database`
+db.py clear                 - clears the database
+db.py add <user> <password> - adds a user
+db.py print_table           - prints all users
+db.py get <user>            - gets password about
 
-`db.py add <user> <password> - adds a user`
-
-`db.py print_table - prints all users`
 
 ## Postęp
 
