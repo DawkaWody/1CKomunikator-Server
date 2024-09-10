@@ -16,7 +16,7 @@ from db import DbManager
 from main import app
 from utils import get_root
 
-from .sample_data import PASSWORDS, USERNAME_WRONG, USERNAMES_A, USERNAMES_B
+from .sample_data import PASSWORDS, USERNAME_WRONG, USERNAMES_A, USERNAMES_B, USERNAMES
 
 
 @pytest.fixture
@@ -38,7 +38,7 @@ def db_handle() -> collections.abc.Generator[sqlite3.Connection, None, None]:
 
 
 def get_mock_connect(db_handle: sqlite3.Connection) -> collections.abc.Callable[[], sqlite3.Connection]:
-    def mock_connect(*args, **kwargs) -> sqlite3.Connection: # type : ignore
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:  # type: ignore
         return db_handle
 
     return mock_connect
@@ -135,7 +135,7 @@ def test_add_user_full(username: str, password: str, monkeypatch: pytest.MonkeyP
     monkeypatch.setattr("sqlite3.connect", get_mock_connect(db_handle))
     db_manager: DbManager = db.DbManager(pathlib.Path())
     db_manager.init_db()
-    fill_db(db_handle)
+    fill_db(db_handle, USERNAMES_B)
     db_manager.add_user(username, password)
     assert (username.translate(db.tt_sql_escapes), password.translate(db.tt_sql_escapes)) in get_db_data(db_handle)
 
