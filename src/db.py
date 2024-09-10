@@ -53,7 +53,6 @@ class DbManager:
                                       self.sql_script_templates_env.get_template("get_password.sql")
         self.template_clear = template_clear or \
                               self.sql_script_templates_env.get_template("clear.sql")
-        # type: ignore
         self._db: sqlite3.Connection | None = None
 
     def get_db(self) -> None:
