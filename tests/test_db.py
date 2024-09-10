@@ -4,10 +4,10 @@ try:
 except (ImportError, ModuleNotFoundError) as err:
     msg = "Please install testing requirements (pyptest and requests)"
     raise TypeError(msg) from err
-import pathlib
 import shutil
 import sqlite3
 import uuid
+import pathlib
 import collections
 import typing
 
