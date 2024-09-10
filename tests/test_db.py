@@ -67,7 +67,7 @@ def get_db_data(db_handle: sqlite3.Connection) -> list[tuple[str, str]]:
 def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
     fill_db(db_handle, USERNAMES_B)
 
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -81,7 +81,7 @@ def test_init_db_full(db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyP
 
 
 def test_init_db_empty(db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -119,7 +119,7 @@ def test_close_db_closed() -> None:
 @pytest.mark.parametrize("password", PASSWORDS)
 def test_add_user_empty(username: str, password: str, monkeypatch: pytest.MonkeyPatch,
                         db_handle: sqlite3.Connection) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -135,7 +135,7 @@ def test_add_user_empty(username: str, password: str, monkeypatch: pytest.Monkey
 @pytest.mark.parametrize("password", PASSWORDS)
 def test_add_user_full(username: str, password: str, monkeypatch: pytest.MonkeyPatch,
                        db_handle: sqlite3.Connection) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -148,7 +148,7 @@ def test_add_user_full(username: str, password: str, monkeypatch: pytest.MonkeyP
 
 @pytest.mark.parametrize("username", USERNAMES_A)
 def test_add_user_invalid_exists(username: str, db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -161,7 +161,7 @@ def test_add_user_invalid_exists(username: str, db_handle: sqlite3.Connection, m
 
 @pytest.mark.parametrize("username", USERNAME_WRONG)
 def test_add_user_invalid(username: str, db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -173,7 +173,7 @@ def test_add_user_invalid(username: str, db_handle: sqlite3.Connection, monkeypa
 
 @pytest.mark.parametrize("password", PASSWORDS)
 def test_get_password_exists(password: str, db_handle: sqlite3.Connection, monkeypatch: pytest.MonkeyPatch) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
@@ -187,7 +187,7 @@ def test_get_password_exists(password: str, db_handle: sqlite3.Connection, monke
 @pytest.mark.parametrize("username", USERNAMES_A)
 def test_get_password_invalid_full(username: str, db_handle: sqlite3.Connection,
                                    monkeypatch: pytest.MonkeyPatch) -> None:
-    def mock_connect(*args: typing.Any, **kwargs: typing.Any) -> sqlite3.Connection:
+    def mock_connect(*args, **kwargs) -> sqlite3.Connection:
         return db_handle
 
     monkeypatch.setattr("sqlite3.connect", mock_connect)
